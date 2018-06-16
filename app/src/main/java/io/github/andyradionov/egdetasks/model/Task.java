@@ -55,6 +55,14 @@ public class Task implements Parcelable {
         dest.writeLong(dueDate.getTime());
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getText() {
         return text;
     }

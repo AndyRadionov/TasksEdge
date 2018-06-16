@@ -47,7 +47,7 @@ public class TasksActivity extends AppCompatActivity implements TasksAdapter.OnT
             @Override
             public void onClick(View view) {
                 Intent addNewTask = new Intent(TasksActivity.this, AddTaskActivity.class);
-                startActivity(addNewTask);
+                startActivityForResult(addNewTask, ADD_TASK_REQUEST_CODE);
             }
         });
 
@@ -87,9 +87,15 @@ public class TasksActivity extends AppCompatActivity implements TasksAdapter.OnT
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_TASK_REQUEST_CODE && resultCode == RESULT_OK) {
-
+            Task task = data.getParcelableExtra(EditTaskActivity.TASK_EXTRA);
+            MockUtil.getMockTasks().remove(task.getId());
+            MockUtil.getMockTasks().add(task.getId(), task);
+            mTasksAdapter.notifyDataSetChanged();
         } else if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == RESULT_OK) {
-
+            Task task = data.getParcelableExtra(EditTaskActivity.TASK_EXTRA);
+            task.setId(MockUtil.getMockTasks().size());
+            MockUtil.getMockTasks().add(task);
+            mTasksAdapter.notifyDataSetChanged();
         }
     }
 
