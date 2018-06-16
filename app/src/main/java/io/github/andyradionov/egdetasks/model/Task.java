@@ -1,23 +1,58 @@
 package io.github.andyradionov.egdetasks.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * @author Andrey Radionov
  */
 
-public class Task {
+public class Task implements Parcelable {
     private int id;
     private String text;
     private Date dueDate;
-    private TaskPriority priority;
+    private int priority;
     private boolean isDone;
 
-    public Task(int id, String text, Date dueDate, TaskPriority priority) {
+    public Task(int id, String text, Date dueDate, int priority) {
         this.id = id;
         this.text = text;
         this.dueDate = dueDate;
         this.priority = priority;
+    }
+
+    protected Task(Parcel in) {
+        id = in.readInt();
+        text = in.readString();
+        isDone = in.readByte() != 0;
+        dueDate = new Date(in.readLong());
+    }
+
+    public static final Creator<Task> CREATOR = new Creator<Task>() {
+        @Override
+        public Task createFromParcel(Parcel in) {
+            return new Task(in);
+        }
+
+        @Override
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(text);
+        dest.writeByte((byte) (isDone ? 1 : 0));
+        dest.writeLong(dueDate.getTime());
     }
 
     public String getText() {
@@ -36,11 +71,11 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public TaskPriority getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(TaskPriority priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 

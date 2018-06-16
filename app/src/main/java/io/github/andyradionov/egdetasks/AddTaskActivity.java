@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class AddTaskActivity extends AppCompatActivity {
@@ -24,9 +25,6 @@ public class AddTaskActivity extends AppCompatActivity {
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-//setTitle("AAAAA");
-//                    setSupportActionBar(toolbar);
-//getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
@@ -34,5 +32,22 @@ public class AddTaskActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_task, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                finish();
+                return true;
+            case R.id.action_done:
+                setResult(RESULT_OK);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

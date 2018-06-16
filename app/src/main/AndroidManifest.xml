@@ -8,20 +8,35 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".TasksActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".TasksActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".AddTaskActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".EditTaskActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".TasksActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TasksActivity" />
+        </activity>
+        <activity
+            android:name=".AddTaskActivity"
+            android:parentActivityName=".TasksActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TasksActivity" />
+        </activity>
+        <activity
+            android:name=".EditTaskActivity"
+            android:parentActivityName=".TasksActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TasksActivity" />
+        </activity>
     </application>
 
 </manifest>
