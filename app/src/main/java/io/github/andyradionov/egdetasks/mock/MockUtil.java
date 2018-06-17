@@ -17,7 +17,7 @@ public class MockUtil {
 
     static {
         for (int i = 0; i < 5; i++) {
-            Task task = new Task(i, "MOCK " + i, new Date(), 0);
+            Task task = new Task(i, "MOCK " + i, 0, new Date());
             mockTasks.add(task);
         }
     }

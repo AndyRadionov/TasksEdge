@@ -12,15 +12,19 @@ import java.util.Date;
 public class Task implements Parcelable {
     private int id;
     private String text;
-    private Date dueDate;
     private int priority;
+    private Date dueDate;
     private boolean isDone;
 
-    public Task(int id, String text, Date dueDate, int priority) {
+    public Task() {
+        this(0, "", 0, new Date());
+    }
+
+    public Task(int id, String text, int priority, Date dueDate) {
         this.id = id;
         this.text = text;
-        this.dueDate = dueDate;
         this.priority = priority;
+        this.dueDate = dueDate;
     }
 
     protected Task(Parcel in) {
@@ -71,20 +75,20 @@ public class Task implements Parcelable {
         this.text = text;
     }
 
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
     public int getPriority() {
         return priority;
     }
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 
     public boolean isDone() {
