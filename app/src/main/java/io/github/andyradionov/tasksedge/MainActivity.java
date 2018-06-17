@@ -17,12 +17,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.andyradionov.tasksedge.mock.MockUtil;
 import io.github.andyradionov.tasksedge.model.Task;
 
-public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTaskCheckBoxClickListener, TasksAdapter.OnTaskCardClickListener {
+public class MainActivity extends AppCompatActivity implements
+        TasksAdapter.OnTaskCheckBoxClickListener,
+        TasksAdapter.OnTaskCardClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int ADD_TASK_REQUEST_CODE = 100;
     private static final int EDIT_TASK_REQUEST_CODE = 101;
@@ -38,6 +42,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
         setUpToolbar();
         setUpFab();
         setUpRecycler();
+        setupSharedPreferences();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -67,6 +79,23 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
         Intent editTaskIntent = new Intent(this, TaskActivity.class);
         editTaskIntent.putExtra(TaskActivity.TASK_EXTRA, task);
         startActivityForResult(editTaskIntent, EDIT_TASK_REQUEST_CODE);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_show_done_key))) {
+            boolean showDone = sharedPreferences.getBoolean(key,
+                    getResources().getBoolean(R.bool.pref_show_done_default));
+            if (showDone) {
+                mTasksAdapter.updateData(MockUtil.getMockTasks());
+            } else {
+                List<Task> tasks = new ArrayList<>();
+                for (Task task : MockUtil.getMockTasks()) {
+                    if (!task.isDone()) tasks.add(task);
+                }
+                mTasksAdapter.updateData(tasks);
+            }
+        }
     }
 
     @Override
@@ -121,7 +150,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
 
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean notificationsEnabled = sharedPreferences.getBoolean("notifications_enabled", true);
+        String showDoneKey = getString(R.string.pref_show_done_key);
+        boolean showDoneDefault = getResources().getBoolean(R.bool.pref_show_done_default);
+        boolean showDone = sharedPreferences.getBoolean(showDoneKey, showDoneDefault);
 
+        String enableNoticesKey = getString(R.string.pref_enable_notices_key);
+        boolean noticesEnabledDefault = getResources().getBoolean(R.bool.pref_enable_notices_default);
+        boolean noticesEnabled = sharedPreferences.getBoolean(enableNoticesKey, noticesEnabledDefault);
+
+        String enableSyncKey = getString(R.string.pref_enable_synchronization_key);
+        boolean syncEnabledDefault = getResources().getBoolean(R.bool.pref_enable_sync_default);
+        boolean syncEnabled = sharedPreferences.getBoolean(enableSyncKey, syncEnabledDefault);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 }

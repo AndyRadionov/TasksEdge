@@ -64,6 +64,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         return mTasks != null ? mTasks.size() : 0;
     }
 
+    public void updateData(List<Task> tasks) {
+        mTasks = tasks;
+        notifyDataSetChanged();
+    }
+
     class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private CheckBox isTaskDoneView;
         private TextView taskTextView;
