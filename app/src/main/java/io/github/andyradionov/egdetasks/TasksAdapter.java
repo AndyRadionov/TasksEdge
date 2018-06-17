@@ -49,6 +49,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final CardView taskCard = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_task, parent, false);
+
         return new TaskViewHolder(taskCard);
     }
 
@@ -105,6 +106,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         private void setCardChecked(boolean isChecked) {
             int flag = isChecked ? taskTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                     : taskTextView.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG;
+
             isTaskDoneView.setChecked(isChecked);
             taskTextView.setPaintFlags(flag);
             taskDateView.setPaintFlags(flag);

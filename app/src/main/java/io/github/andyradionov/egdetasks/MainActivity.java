@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_settings) {
             Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(startSettingsActivity);
             return true;
@@ -70,15 +69,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EDIT_TASK_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             Task task = data.getParcelableExtra(TaskActivity.TASK_EXTRA);
-            MockUtil.getMockTasks().remove(task.getId());
-            MockUtil.getMockTasks().add(task.getId(), task);
-            mTasksAdapter.notifyDataSetChanged();
-        } else if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == RESULT_OK) {
-            Task task = data.getParcelableExtra(TaskActivity.TASK_EXTRA);
-            task.setId(MockUtil.getMockTasks().size());
-            MockUtil.getMockTasks().add(task);
+            if (requestCode == EDIT_TASK_REQUEST_CODE) {
+                MockUtil.getMockTasks().remove(task.getId());
+                MockUtil.getMockTasks().add(task.getId(), task);
+            } else if (requestCode == ADD_TASK_REQUEST_CODE) {
+                task.setId(MockUtil.getMockTasks().size());
+                MockUtil.getMockTasks().add(task);
+            }
             mTasksAdapter.notifyDataSetChanged();
         }
     }

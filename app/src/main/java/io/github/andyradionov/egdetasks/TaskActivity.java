@@ -41,7 +41,6 @@ public class TaskActivity extends AppCompatActivity {
     private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyyHH:mm",
             Locale.ROOT);
 
-
     private EditText mTextView;
     private EditText mPriorityView;
     private EditText mDateView;
@@ -75,20 +74,14 @@ public class TaskActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
 
-        switch (itemId) {
-            case R.id.action_done:
-                if (checkInput()) {
-                    parseTaskInput();
-                    Intent taskResult = new Intent();
-                    taskResult.putExtra(TaskActivity.TASK_EXTRA, mTask);
-                    setResult(RESULT_OK, taskResult);
-                    finish();
-                    return true;
-                } else {
-                    return false;
-                }
+        if (item.getItemId() == R.id.action_done && checkInput()) {
+            parseTaskInput();
+            Intent taskResult = new Intent();
+            taskResult.putExtra(TaskActivity.TASK_EXTRA, mTask);
+            setResult(RESULT_OK, taskResult);
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -124,8 +117,7 @@ public class TaskActivity extends AppCompatActivity {
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -138,9 +130,9 @@ public class TaskActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(TaskActivity.this, date, calendar
-                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(TaskActivity.this, date, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
             }
         });
 
@@ -151,14 +143,17 @@ public class TaskActivity extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(TaskActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog mTimePicker = new TimePickerDialog(TaskActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
                     @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                    public void onTimeSet(TimePicker timePicker, int selectedHour,
+                                          int selectedMinute) {
                         mTimeView.setText(String.format(Locale.ROOT, "%d:%d",
                                 selectedHour, selectedMinute));
                     }
                 }, hour, minute, true);
+
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
 
