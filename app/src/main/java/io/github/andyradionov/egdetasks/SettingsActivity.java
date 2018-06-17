@@ -14,6 +14,10 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        setUpToolbar();
+    }
+
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
         toolbarTitle.setText("Settings");

@@ -93,9 +93,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
             switch (v.getId()) {
                 case R.id.cb_is_done:
-                    task.setDone(!task.isDone());
-                    setCardChecked(task.isDone());
                     mCheckBoxClickListener.onCheckClick(task);
+                    setCardChecked(task.isDone());
                     break;
                 case R.id.cv_task_card:
                     mCardClickListener.onCardClick(task);

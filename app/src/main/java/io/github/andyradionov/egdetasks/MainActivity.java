@@ -32,25 +32,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
-        toolbarTitle.setText("EdgeTasks");
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
-                startActivityForResult(addNewTask, ADD_TASK_REQUEST_CODE);
-            }
-        });
-
+        setUpToolbar();
+        setUpFab();
         setUpRecycler();
     }
 
@@ -74,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
 
     @Override
     public void onCheckClick(@NonNull Task task) {
-
+        task.setDone(!task.isDone());
     }
 
     @Override
@@ -97,6 +81,29 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
             MockUtil.getMockTasks().add(task);
             mTasksAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
+        toolbarTitle.setText("EdgeTasks");
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+    }
+
+    private void setUpFab() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
+                startActivityForResult(addNewTask, ADD_TASK_REQUEST_CODE);
+            }
+        });
     }
 
     private void setUpRecycler() {
