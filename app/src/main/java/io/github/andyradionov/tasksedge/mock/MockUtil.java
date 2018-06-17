@@ -1,11 +1,11 @@
-package io.github.andyradionov.egdetasks.mock;
+package io.github.andyradionov.tasksedge.mock;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.github.andyradionov.egdetasks.model.Task;
-import io.github.andyradionov.egdetasks.model.TaskPriority;
+import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.model.TaskPriority;
 
 /**
  * @author Andrey Radionov

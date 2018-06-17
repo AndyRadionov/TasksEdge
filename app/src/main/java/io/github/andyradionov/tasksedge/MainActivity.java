@@ -1,11 +1,13 @@
-package io.github.andyradionov.egdetasks;
+package io.github.andyradionov.tasksedge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,8 +19,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import io.github.andyradionov.egdetasks.mock.MockUtil;
-import io.github.andyradionov.egdetasks.model.Task;
+import io.github.andyradionov.tasksedge.mock.MockUtil;
+import io.github.andyradionov.tasksedge.model.Task;
 
 public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTaskCheckBoxClickListener, TasksAdapter.OnTaskCardClickListener {
 
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
-        toolbarTitle.setText("EdgeTasks");
+        toolbarTitle.setText("TasksEdge");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -115,5 +117,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.OnTa
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mTasksRecycler.setLayoutManager(layoutManager);
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean notificationsEnabled = sharedPreferences.getBoolean("notifications_enabled", true);
+
     }
 }

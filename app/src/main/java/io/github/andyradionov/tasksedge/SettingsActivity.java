@@ -1,4 +1,4 @@
-package io.github.andyradionov.egdetasks;
+package io.github.andyradionov.tasksedge;
 
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;

@@ -1,4 +1,4 @@
-package io.github.andyradionov.egdetasks;
+package io.github.andyradionov.tasksedge;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.andyradionov.egdetasks.model.Task;
+import io.github.andyradionov.tasksedge.model.Task;
 
 /**
  * @author Andrey Radionov

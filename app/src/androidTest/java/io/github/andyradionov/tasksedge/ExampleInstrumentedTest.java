@@ -1,4 +1,4 @@
-package io.github.andyradionov.egdetasks;
+package io.github.andyradionov.tasksedge;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

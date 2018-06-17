@@ -1,4 +1,4 @@
-package io.github.andyradionov.egdetasks.model;
+package io.github.andyradionov.tasksedge.model;
 
 /**
  * @author Andrey Radionov

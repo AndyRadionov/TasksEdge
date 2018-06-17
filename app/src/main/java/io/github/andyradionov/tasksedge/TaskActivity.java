@@ -1,4 +1,4 @@
-package io.github.andyradionov.egdetasks;
+package io.github.andyradionov.tasksedge;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -26,7 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import io.github.andyradionov.egdetasks.model.Task;
+import io.github.andyradionov.tasksedge.model.Task;
 
 /**
  * @author Andrey Radionov
@@ -40,6 +40,8 @@ public class TaskActivity extends AppCompatActivity {
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
     private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyyHH:mm",
             Locale.ROOT);
+
+
 
     private EditText mTextView;
     private EditText mPriorityView;
@@ -186,5 +188,11 @@ public class TaskActivity extends AppCompatActivity {
             Log.d(TAG, "DateTime parse Error");
         }
 
+    }
+
+    //todo
+    private void getDateTimeFormat() {
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
     }
 }

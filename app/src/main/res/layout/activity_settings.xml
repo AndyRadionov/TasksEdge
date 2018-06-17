@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="io.github.andyradionov.egdetasks.SettingsActivity">
+    tools:context="io.github.andyradionov.tasksedge.SettingsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,19 +16,29 @@
 
         <TextView
             android:id="@+id/tv_toolbar_title"
-            android:layout_gravity="center_horizontal"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/white" />
     </android.support.v7.widget.Toolbar>
 
     <TextView
-        tools:text="test"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <fragment
+        android:id="@+id/fr_settings"
+        android:name="io.github.andyradionov.tasksedge.SettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
 </android.support.constraint.ConstraintLayout>

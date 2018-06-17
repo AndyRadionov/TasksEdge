@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.andyradionov.egdetasks">
+    package="io.github.andyradionov.tasksedge">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MainActivity"
+        <activity android:name="io.github.andyradionov.tasksedge.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,17 +18,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity">
+            android:name="io.github.andyradionov.tasksedge.SettingsActivity"
+            android:parentActivityName="io.github.andyradionov.tasksedge.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="io.github.andyradionov.tasksedge.MainActivity" />
         </activity>
-        <activity android:name=".TaskActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name="io.github.andyradionov.tasksedge.TaskActivity"
+            android:parentActivityName="io.github.andyradionov.tasksedge.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="io.github.andyradionov.tasksedge.MainActivity" />
         </activity>
     </application>
 
