@@ -84,6 +84,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         }
 
         private void bind(Task task) {
+            itemView.setTag(task.getId());
             taskTextView.setText(task.getText());
             taskDateView.setText(DATE_FORMAT.format(task.getDueDate()));
 

@@ -11,6 +11,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import io.github.andyradionov.tasksedge.mock.MockUtil;
 import io.github.andyradionov.tasksedge.model.Task;
+
+import static android.support.v7.widget.helper.ItemTouchHelper.*;
 
 public class MainActivity extends AppCompatActivity implements
         TasksAdapter.OnTaskCheckBoxClickListener,
@@ -146,8 +149,29 @@ public class MainActivity extends AppCompatActivity implements
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mTasksRecycler.setLayoutManager(layoutManager);
+
+        ItemTouchHelper touchHelper = new ItemTouchHelper(new SimpleCallback(0, LEFT | RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int id = (int) viewHolder.itemView.getTag();
+                removeTask(id);
+            }
+        });
+        touchHelper.attachToRecyclerView(mTasksRecycler);
     }
 
+    //todo
+    private void removeTask(int id) {
+        MockUtil.getMockTasks().remove(id);
+        mTasksAdapter.notifyDataSetChanged();
+    }
+
+    //todo
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String showDoneKey = getString(R.string.pref_show_done_key);
