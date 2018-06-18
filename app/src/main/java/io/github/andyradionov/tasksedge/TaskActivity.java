@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -42,11 +45,10 @@ public class TaskActivity extends AppCompatActivity {
             Locale.ROOT);
 
 
-
-    private EditText mTextView;
-    private EditText mPriorityView;
+    private EditText mTextInput;
     private EditText mDateView;
     private EditText mTimeView;
+    private RadioGroup mPriorityGroup;
     private Task mTask;
 
     @Override
@@ -102,15 +104,41 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        mTextView = findViewById(R.id.et_task_text);
-        mPriorityView = findViewById(R.id.et_task_priority);
+        mTextInput = findViewById(R.id.et_input_text);
+        mPriorityGroup = findViewById(R.id.priority_radio_group);
         mDateView = findViewById(R.id.et_date);
         mTimeView = findViewById(R.id.et_time);
 
-        mTextView.setText(mTask.getText());
-        mPriorityView.setText(String.valueOf(mTask.getPriority()));
+        mTextInput.setText(mTask.getText());
         mDateView.setText(DATE_FORMAT.format(mTask.getDueDate()));
         mTimeView.setText(TIME_FORMAT.format(mTask.getDueDate()));
+        setPriority();
+    }
+
+    private void setPriority() {
+        switch (mTask.getPriority()) {
+            case 0:
+                mPriorityGroup.check(R.id.rb_low_priority);
+                break;
+            case 1:
+                mPriorityGroup.check(R.id.rb_norm_priority);
+                break;
+            case 2:
+                mPriorityGroup.check(R.id.rb_high_priority);
+                break;
+        }
+    }
+
+    private int parsePriority() {
+        switch (mPriorityGroup.getCheckedRadioButtonId()) {
+            case R.id.rb_low_priority:
+                return 0;
+            case R.id.rb_norm_priority:
+                return 1;
+            case R.id.rb_high_priority:
+                return 2;
+        }
+        return 0;
     }
 
     private void setUpDateTimePickers() {
@@ -164,19 +192,19 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private boolean checkInput() {
-        String text = mTextView.getText().toString().trim();
+        String text = mTextInput.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
-            mTextView.setBackgroundColor(Color.parseColor("#FF0000"));
+            mTextInput.setError("Text cant be empty!");
             return false;
         }
         return true;
     }
 
     private void parseTaskInput() {
-        String text = mTextView.getText().toString().trim();
-        int priority = Integer.parseInt(mPriorityView.getText().toString());
+        String text = mTextInput.getText().toString().trim();
         String dateText = mDateView.getText().toString().trim();
         String timeText = mTimeView.getText().toString().trim();
+        int priority = parsePriority();
 
         mTask.setText(text);
         mTask.setPriority(priority);

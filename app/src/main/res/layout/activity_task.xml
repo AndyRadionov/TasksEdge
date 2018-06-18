@@ -21,65 +21,130 @@
             android:layout_gravity="center_horizontal" />
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/tv_task_text_label"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_text"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="Text"
+        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
-    <EditText
-        android:id="@+id/et_task_text"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_task_text_label"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:errorEnabled="true">
+
+        <EditText
+            android:id="@+id/et_input_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Text" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:id="@+id/tv_task_priority_label"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_priority_label"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:gravity="left"
         android:text="Priority"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_task_text" />
-    <EditText
-        android:id="@+id/et_task_priority"
-        android:layout_width="200dp"
+        app:layout_constraintTop_toBottomOf="@id/input_layout_text" />
+
+    <RadioGroup
+        android:id="@+id/priority_radio_group"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_task_priority_label"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_priority_label">
+
+
+        <RadioButton
+            android:id="@+id/rb_low_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Low" />
+
+        <RadioButton
+            android:id="@+id/rb_norm_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Normal" />
+
+        <RadioButton
+            android:id="@+id/rb_high_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="High" />
+    </RadioGroup>
+
+    <View
+        android:id="@+id/priority_divider"
+        android:layout_width="280dp"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/priority_radio_group" />
+
 
     <TextView
         android:id="@+id/tv_task_date_label"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="Date"
+        android:layout_marginTop="32dp"
+        android:gravity="left"
+        android:text="Due Date"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_task_priority" />
+        app:layout_constraintTop_toBottomOf="@id/priority_divider" />
+
+
     <EditText
         android:id="@+id/et_date"
-        android:layout_width="200dp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
         android:focusable="false"
         android:inputType="date"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_task_date_label"/>
+        app:layout_constraintLeft_toLeftOf="@id/tv_task_date_label"
+        app:layout_constraintTop_toBottomOf="@id/tv_task_date_label" />
 
     <EditText
         android:id="@+id/et_time"
-        android:layout_width="200dp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
         android:focusable="false"
         android:inputType="time"
+        app:layout_constraintRight_toRightOf="@id/tv_task_date_label"
+        app:layout_constraintTop_toBottomOf="@id/tv_task_date_label" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_date"/>
+        app:layout_constraintRight_toRightOf="parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quote of the day:" />
+
+            <TextView
+                android:id="@+id/tv_quote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </android.support.constraint.ConstraintLayout>

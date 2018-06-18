@@ -30,6 +30,7 @@ public class Task implements Parcelable {
     protected Task(Parcel in) {
         id = in.readInt();
         text = in.readString();
+        priority = in.readInt();
         isDone = in.readByte() != 0;
         dueDate = new Date(in.readLong());
     }
@@ -55,6 +56,7 @@ public class Task implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(text);
+        dest.writeInt(priority);
         dest.writeByte((byte) (isDone ? 1 : 0));
         dest.writeLong(dueDate.getTime());
     }
