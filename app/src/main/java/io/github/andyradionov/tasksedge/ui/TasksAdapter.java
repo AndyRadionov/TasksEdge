@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge;
+package io.github.andyradionov.tasksedge.ui;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
@@ -12,10 +12,12 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.database.Task;
 
 /**
  * @author Andrey Radionov
@@ -37,9 +39,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     private OnTaskCheckBoxClickListener mCheckBoxClickListener;
     private OnTaskCardClickListener mCardClickListener;
 
-    public TasksAdapter(List<Task> tasks, OnTaskCheckBoxClickListener checkBoxClickListener,
+    public TasksAdapter(OnTaskCheckBoxClickListener checkBoxClickListener,
                         OnTaskCardClickListener cardClickListener) {
-        mTasks = tasks;
+        mTasks = new ArrayList<>();
         mCheckBoxClickListener = checkBoxClickListener;
         mCardClickListener = cardClickListener;
     }
@@ -65,7 +67,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     public void updateData(List<Task> tasks) {
-        mTasks = tasks;
+        mTasks.clear();
+        mTasks.addAll(tasks);
         notifyDataSetChanged();
     }
 

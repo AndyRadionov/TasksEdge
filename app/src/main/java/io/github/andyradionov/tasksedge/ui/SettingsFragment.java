@@ -1,7 +1,9 @@
-package io.github.andyradionov.tasksedge;
+package io.github.andyradionov.tasksedge.ui;
 
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceFragmentCompat;
+
+import io.github.andyradionov.tasksedge.R;
 
 /**
  * @author Andrey Radionov

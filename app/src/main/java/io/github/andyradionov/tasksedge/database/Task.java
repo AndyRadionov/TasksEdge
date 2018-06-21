@@ -1,5 +1,9 @@
-package io.github.andyradionov.tasksedge.model;
+package io.github.andyradionov.tasksedge.database;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,23 +12,28 @@ import java.util.Date;
 /**
  * @author Andrey Radionov
  */
-
+@Entity(tableName = "task")
 public class Task implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String text;
     private int priority;
+    @ColumnInfo(name = "due_date")
     private Date dueDate;
+    @ColumnInfo(name = "is_done")
     private boolean isDone;
 
+    @Ignore
     public Task() {
-        this(0, "", 0, new Date());
+        this(0, "", 0, new Date(), false);
     }
 
-    public Task(int id, String text, int priority, Date dueDate) {
+    public Task(int id, String text, int priority, Date dueDate, boolean isDone) {
         this.id = id;
         this.text = text;
         this.priority = priority;
         this.dueDate = dueDate;
+        this.isDone = isDone;
     }
 
     protected Task(Parcel in) {

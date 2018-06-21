@@ -1,11 +1,9 @@
-package io.github.andyradionov.tasksedge;
+package io.github.andyradionov.tasksedge.ui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -29,7 +26,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.database.Task;
 
 /**
  * @author Andrey Radionov

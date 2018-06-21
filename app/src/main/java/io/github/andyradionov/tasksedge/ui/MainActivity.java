@@ -1,8 +1,11 @@
-package io.github.andyradionov.tasksedge;
+package io.github.andyradionov.tasksedge.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,8 +25,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.andyradionov.tasksedge.mock.MockUtil;
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.database.AppDatabase;
+import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.viewmodels.MainViewModel;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.*;
 
@@ -36,12 +42,15 @@ public class MainActivity extends AppCompatActivity implements
 
     private RecyclerView mTasksRecycler;
     private TasksAdapter mTasksAdapter;
+    private AppDatabase mDb;
+    private boolean mShowDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDb = AppDatabase.getInstance(this);
         setUpToolbar();
         setUpFab();
         setUpRecycler();
@@ -87,17 +96,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_show_done_key))) {
-            boolean showDone = sharedPreferences.getBoolean(key,
+            mShowDone = sharedPreferences.getBoolean(key,
                     getResources().getBoolean(R.bool.pref_show_done_default));
-            if (showDone) {
-                mTasksAdapter.updateData(MockUtil.getMockTasks());
-            } else {
-                List<Task> tasks = new ArrayList<>();
-                for (Task task : MockUtil.getMockTasks()) {
-                    if (!task.isDone()) tasks.add(task);
-                }
-                mTasksAdapter.updateData(tasks);
-            }
+            setupViewModel();
         }
     }
 
@@ -106,13 +107,11 @@ public class MainActivity extends AppCompatActivity implements
         if (resultCode == RESULT_OK) {
             Task task = data.getParcelableExtra(TaskActivity.TASK_EXTRA);
             if (requestCode == EDIT_TASK_REQUEST_CODE) {
-                MockUtil.getMockTasks().remove(task.getId());
-                MockUtil.getMockTasks().add(task.getId(), task);
+                AppDatabase.getInstance(MainActivity.this)
+                        .taskDao().updateTask(task);
             } else if (requestCode == ADD_TASK_REQUEST_CODE) {
-                task.setId(MockUtil.getMockTasks().size());
-                MockUtil.getMockTasks().add(task);
+                mDb.taskDao().insertTask(task);
             }
-            mTasksAdapter.notifyDataSetChanged();
         }
     }
 
@@ -142,8 +141,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setUpRecycler() {
         mTasksRecycler = findViewById(R.id.rv_tasks_container);
 
-        List<Task> tasks = MockUtil.getMockTasks();
-        mTasksAdapter = new TasksAdapter(tasks, this, this);
+        mTasksAdapter = new TasksAdapter(this, this);
         mTasksRecycler.setAdapter(mTasksAdapter);
 
         LinearLayoutManager layoutManager =
@@ -159,16 +157,23 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int id = (int) viewHolder.itemView.getTag();
-                removeTask(id);
+                AppDatabase.getInstance(MainActivity.this)
+                        .taskDao().deleteTaskById(id);
             }
         });
         touchHelper.attachToRecyclerView(mTasksRecycler);
+        setupViewModel();
     }
 
-    //todo
-    private void removeTask(int id) {
-        MockUtil.getMockTasks().remove(id);
-        mTasksAdapter.notifyDataSetChanged();
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.setShowDone(mShowDone);
+        viewModel.getTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(@Nullable List<Task> tasks) {
+                mTasksAdapter.updateData(tasks);
+            }
+        });
     }
 
     //todo
@@ -176,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String showDoneKey = getString(R.string.pref_show_done_key);
         boolean showDoneDefault = getResources().getBoolean(R.bool.pref_show_done_default);
-        boolean showDone = sharedPreferences.getBoolean(showDoneKey, showDoneDefault);
+        mShowDone = sharedPreferences.getBoolean(showDoneKey, showDoneDefault);
 
         String enableNoticesKey = getString(R.string.pref_enable_notices_key);
         boolean noticesEnabledDefault = getResources().getBoolean(R.bool.pref_enable_notices_default);

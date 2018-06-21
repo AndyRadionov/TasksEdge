@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge;
+package io.github.andyradionov.tasksedge.ui;
 
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import io.github.andyradionov.tasksedge.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
