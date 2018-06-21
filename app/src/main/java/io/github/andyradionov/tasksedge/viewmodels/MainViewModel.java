@@ -18,7 +18,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void setShowDone(boolean showDone) {
-        AppDatabase db = AppDatabase.getInstance(this.getApplication());
+        AppDatabase db = AppDatabase.getInstance(this.getApplication().getApplicationContext());
         if (showDone) {
             mTasks = db.taskDao().getAllTasks();
         } else {

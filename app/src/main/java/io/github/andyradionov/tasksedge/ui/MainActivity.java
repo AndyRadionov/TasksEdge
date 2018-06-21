@@ -15,14 +15,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.andyradionov.tasksedge.R;
@@ -53,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements
         mDb = AppDatabase.getInstance(this);
         setUpToolbar();
         setUpFab();
-        setUpRecycler();
         setupSharedPreferences();
+        setUpRecycler();
     }
 
     @Override
@@ -84,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onCheckClick(@NonNull Task task) {
         task.setDone(!task.isDone());
+        AppDatabase.getInstance(MainActivity.this)
+                .taskDao().updateTask(task);
     }
 
     @Override
@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
         if (key.equals(getString(R.string.pref_show_done_key))) {
             mShowDone = sharedPreferences.getBoolean(key,
                     getResources().getBoolean(R.bool.pref_show_done_default));
+
             setupViewModel();
         }
     }
@@ -166,8 +167,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setupViewModel() {
+        //MainViewModelFactory factory = new MainViewModelFactory(mDb, mShowDone);
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.setShowDone(mShowDone);
+
+
         viewModel.getTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {

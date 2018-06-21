@@ -91,9 +91,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             taskTextView.setText(task.getText());
             taskDateView.setText(DATE_FORMAT.format(task.getDueDate()));
 
-            if (task.isDone()) {
-                setCardChecked(true);
-            }
+            setCardChecked(task.isDone());
         }
 
         @Override
@@ -113,8 +111,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         }
 
         private void setCardChecked(boolean isChecked) {
+
             int flag = isChecked ? taskTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
-                    : taskTextView.getPaintFlags() ^ Paint.STRIKE_THRU_TEXT_FLAG;
+                    : taskTextView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG;
 
             isTaskDoneView.setChecked(isChecked);
             taskTextView.setPaintFlags(flag);
