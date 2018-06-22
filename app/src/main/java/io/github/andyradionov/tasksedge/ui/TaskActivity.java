@@ -3,9 +3,11 @@ package io.github.andyradionov.tasksedge.ui;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -47,6 +49,7 @@ public class TaskActivity extends AppCompatActivity {
     private EditText mDateView;
     private EditText mTimeView;
     private RadioGroup mPriorityGroup;
+    private TextView mQuoteView;
     private Task mTask;
 
     @Override
@@ -106,11 +109,22 @@ public class TaskActivity extends AppCompatActivity {
         mPriorityGroup = findViewById(R.id.priority_radio_group);
         mDateView = findViewById(R.id.et_date);
         mTimeView = findViewById(R.id.et_time);
+        mQuoteView = findViewById(R.id.tv_quote);
 
         mTextInput.setText(mTask.getText());
         mDateView.setText(DATE_FORMAT.format(mTask.getDueDate()));
         mTimeView.setText(TIME_FORMAT.format(mTask.getDueDate()));
         setPriority();
+        setQuote();
+    }
+
+    private void setQuote() {
+        String quoteKey = getString(R.string.pref_quote_key);
+        String quoteDefault = getString(R.string.pref_quote_default);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String quote = prefs.getString(quoteKey, quoteDefault);
+        Log.d(TAG, "setQuote: " + quote);
+        mQuoteView.setText(quote);
     }
 
     private void setPriority() {

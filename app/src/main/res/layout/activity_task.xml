@@ -139,7 +139,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quote of the day:" />
+                android:text="@string/quote_label" />
 
             <TextView
                 android:id="@+id/tv_quote"

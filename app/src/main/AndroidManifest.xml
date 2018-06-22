@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.andyradionov.tasksedge">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name="io.github.andyradionov.tasksedge.ui.MainActivity"
+        <activity
+            android:name="io.github.andyradionov.tasksedge.ui.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,12 +26,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />
         </activity>
-        <activity android:name="io.github.andyradionov.tasksedge.ui.TaskActivity"
+        <activity
+            android:name="io.github.andyradionov.tasksedge.ui.TaskActivity"
             android:parentActivityName="io.github.andyradionov.tasksedge.ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />
         </activity>
+
+        <service
+            android:name=".network.QuoteFetcherIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -26,6 +26,7 @@ import java.util.List;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.AppDatabase;
 import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.network.QuoteFetcherIntentService;
 import io.github.andyradionov.tasksedge.viewmodels.MainViewModel;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.*;
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = new Intent(this, QuoteFetcherIntentService.class);
+        startService(intent);
 
         mDb = AppDatabase.getInstance(this);
         setUpToolbar();
