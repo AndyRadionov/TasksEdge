@@ -3,6 +3,7 @@
     package="io.github.andyradionov.tasksedge">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,6 +38,8 @@
         <service
             android:name=".network.QuoteFetcherIntentService"
             android:exported="false" />
+
+        <receiver android:name=".NotificationPublisher" />
     </application>
 
 </manifest>

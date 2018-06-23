@@ -1,5 +1,6 @@
 package io.github.andyradionov.tasksedge.ui;
 
+import android.app.Notification;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.AppDatabase;
 import io.github.andyradionov.tasksedge.database.Task;
 import io.github.andyradionov.tasksedge.network.QuoteFetcherIntentService;
+import io.github.andyradionov.tasksedge.utils.NotificationUtils;
 import io.github.andyradionov.tasksedge.viewmodels.MainViewModel;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.*;
@@ -114,9 +116,12 @@ public class MainActivity extends AppCompatActivity implements
             if (requestCode == EDIT_TASK_REQUEST_CODE) {
                 AppDatabase.getInstance(MainActivity.this)
                         .taskDao().updateTask(task);
+                NotificationUtils.cancelNotification(this, task);
             } else if (requestCode == ADD_TASK_REQUEST_CODE) {
-                mDb.taskDao().insertTask(task);
+                long id = mDb.taskDao().insertTask(task);
+                task.setId(id);
             }
+            NotificationUtils.scheduleNotification(this, task);
         }
     }
 

@@ -24,7 +24,7 @@ public interface TaskDao {
     LiveData<List<Task>> getAllNotDoneTasks();
 
     @Insert
-    void insertTask(Task task);
+    long insertTask(Task task);
 
     @Query("DELETE FROM task WHERE id = :id")
     void deleteTaskById(int id);
