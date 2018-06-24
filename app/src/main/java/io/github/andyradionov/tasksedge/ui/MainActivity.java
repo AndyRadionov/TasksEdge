@@ -1,6 +1,5 @@
 package io.github.andyradionov.tasksedge.ui;
 
-import android.app.Notification;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -27,7 +26,7 @@ import java.util.List;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.AppDatabase;
 import io.github.andyradionov.tasksedge.database.Task;
-import io.github.andyradionov.tasksedge.network.QuoteFetcherIntentService;
+import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.utils.NotificationUtils;
 import io.github.andyradionov.tasksedge.viewmodels.MainViewModel;
 
@@ -51,8 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, QuoteFetcherIntentService.class);
-        startService(intent);
+        QuoteFetcherUtils.scheduleUpdate(this);
 
         mDb = AppDatabase.getInstance(this);
         setUpToolbar();
@@ -106,6 +104,11 @@ public class MainActivity extends AppCompatActivity implements
                     getResources().getBoolean(R.bool.pref_show_done_default));
 
             setupViewModel();
+        } else if (key.equals(getString(R.string.pref_enable_notices_key))) {
+            boolean notificationsEnabled = sharedPreferences.getBoolean(key,
+                    getResources().getBoolean(R.bool.pref_enable_notices_default));
+            NotificationUtils.setNotificationsEnabled(this, notificationsEnabled);
+            setupNotifications(notificationsEnabled);
         }
     }
 
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements
                 NotificationUtils.cancelNotification(this, task);
             } else if (requestCode == ADD_TASK_REQUEST_CODE) {
                 long id = mDb.taskDao().insertTask(task);
-                task.setId(id);
+                task.setId((int) id);
             }
             NotificationUtils.scheduleNotification(this, task);
         }
@@ -189,7 +192,20 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    //todo
+    private void setupNotifications(final boolean isEnabled) {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(@Nullable List<Task> tasks) {
+                if (isEnabled) {
+                    NotificationUtils.scheduleAllNotifications(MainActivity.this, tasks);
+                } else {
+                    NotificationUtils.cancelAllNotifications(MainActivity.this, tasks);
+                }
+            }
+        });
+    }
+
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String showDoneKey = getString(R.string.pref_show_done_key);
@@ -199,7 +215,10 @@ public class MainActivity extends AppCompatActivity implements
         String enableNoticesKey = getString(R.string.pref_enable_notices_key);
         boolean noticesEnabledDefault = getResources().getBoolean(R.bool.pref_enable_notices_default);
         boolean noticesEnabled = sharedPreferences.getBoolean(enableNoticesKey, noticesEnabledDefault);
+        NotificationUtils.setNotificationsEnabled(this, noticesEnabled);
+        setupNotifications(noticesEnabled);
 
+        //todo
         String enableSyncKey = getString(R.string.pref_enable_synchronization_key);
         boolean syncEnabledDefault = getResources().getBoolean(R.bool.pref_enable_sync_default);
         boolean syncEnabled = sharedPreferences.getBoolean(enableSyncKey, syncEnabledDefault);

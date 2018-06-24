@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -35,11 +37,16 @@
                 android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />
         </activity>
 
-        <service
-            android:name=".network.QuoteFetcherIntentService"
-            android:exported="false" />
+        <service android:name=".network.QuoteFirebaseJobService"
+            android:exported="false"/>
 
         <receiver android:name=".NotificationPublisher" />
+        <receiver android:name=".BootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

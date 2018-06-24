@@ -15,7 +15,7 @@ import java.util.Date;
 @Entity(tableName = "task")
 public class Task implements Parcelable {
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private int id;
     private String text;
     private int priority;
     @ColumnInfo(name = "due_date")
@@ -28,7 +28,7 @@ public class Task implements Parcelable {
         this(0, "", 0, new Date(), false);
     }
 
-    public Task(long id, String text, int priority, Date dueDate, boolean isDone) {
+    public Task(int id, String text, int priority, Date dueDate, boolean isDone) {
         this.id = id;
         this.text = text;
         this.priority = priority;
@@ -37,7 +37,7 @@ public class Task implements Parcelable {
     }
 
     protected Task(Parcel in) {
-        id = in.readLong();
+        id = in.readInt();
         text = in.readString();
         priority = in.readInt();
         isDone = in.readByte() != 0;
@@ -63,18 +63,18 @@ public class Task implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeInt(id);
         dest.writeString(text);
         dest.writeInt(priority);
         dest.writeByte((byte) (isDone ? 1 : 0));
         dest.writeLong(dueDate.getTime());
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
