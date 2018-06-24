@@ -193,17 +193,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void setupNotifications(final boolean isEnabled) {
-        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable List<Task> tasks) {
-                if (isEnabled) {
-                    NotificationUtils.scheduleAllNotifications(MainActivity.this, tasks);
-                } else {
-                    NotificationUtils.cancelAllNotifications(MainActivity.this, tasks);
-                }
-            }
-        });
+//        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+//        viewModel.getTasks().observe(this, new Observer<List<Task>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Task> tasks) {
+//                if (isEnabled) {
+//                    NotificationUtils.scheduleAllNotifications(MainActivity.this, tasks);
+//                } else {
+//                    NotificationUtils.cancelAllNotifications(MainActivity.this, tasks);
+//                }
+//            }
+//        });
     }
 
     private void setupSharedPreferences() {
