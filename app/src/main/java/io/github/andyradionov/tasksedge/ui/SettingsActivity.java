@@ -1,12 +1,13 @@
 package io.github.andyradionov.tasksedge.ui;
 
-import android.support.v4.app.NavUtils;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+
+import com.firebase.ui.auth.AuthUI;
 
 import io.github.andyradionov.tasksedge.R;
 
@@ -22,7 +23,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
-        toolbarTitle.setText("Settings");
+        toolbarTitle.setText(R.string.settings_title);
+        toolbar.setNavigationIcon(R.drawable.ic_back_white);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -32,4 +34,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    public void signOut(View view) {
+        AuthUI.getInstance().signOut(this);
+        finish();
+    }
 }

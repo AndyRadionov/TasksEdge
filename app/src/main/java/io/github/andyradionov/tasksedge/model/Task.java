@@ -1,9 +1,5 @@
-package io.github.andyradionov.tasksedge.database;
+package io.github.andyradionov.tasksedge.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,35 +8,32 @@ import java.util.Date;
 /**
  * @author Andrey Radionov
  */
-@Entity(tableName = "task")
 public class Task implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+
+    private String key;
     private int id;
     private String text;
-    private int priority;
-    @ColumnInfo(name = "due_date")
     private Date dueDate;
-    @ColumnInfo(name = "is_done")
-    private boolean isDone;
 
-    @Ignore
     public Task() {
-        this(0, "", 0, new Date(), false);
+        this(null, "", new Date());
     }
 
-    public Task(int id, String text, int priority, Date dueDate, boolean isDone) {
-        this.id = id;
+    public Task(String text) {
+        this(null, text, new Date());
+    }
+
+    public Task(String key, String text, Date dueDate) {
+        this.key = key;
         this.text = text;
-        this.priority = priority;
         this.dueDate = dueDate;
-        this.isDone = isDone;
+        this.id = (int) new Date().getTime();
     }
 
     protected Task(Parcel in) {
+        key = in.readString();
         id = in.readInt();
         text = in.readString();
-        priority = in.readInt();
-        isDone = in.readByte() != 0;
         dueDate = new Date(in.readLong());
     }
 
@@ -63,11 +56,18 @@ public class Task implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
         dest.writeInt(id);
         dest.writeString(text);
-        dest.writeInt(priority);
-        dest.writeByte((byte) (isDone ? 1 : 0));
         dest.writeLong(dueDate.getTime());
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public int getId() {
@@ -86,14 +86,6 @@ public class Task implements Parcelable {
         this.text = text;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     public Date getDueDate() {
         return dueDate;
     }
@@ -102,11 +94,18 @@ public class Task implements Parcelable {
         this.dueDate = dueDate;
     }
 
-    public boolean isDone() {
-        return isDone;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Task task = (Task) o;
+
+        return key.equals(task.key);
     }
 
-    public void setDone(boolean done) {
-        isDone = done;
+    @Override
+    public int hashCode() {
+        return key.hashCode();
     }
 }

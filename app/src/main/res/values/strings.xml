@@ -8,9 +8,6 @@
     <string name="pref_enable_notifications_label">Enable Notifications</string>
     <string name="pref_enable_notices_key" translatable="false">enable_notifications</string>
 
-    <string name="pref_enable_synchronization_label">Enable Synchronization</string>
-    <string name="pref_enable_synchronization_key" translatable="false">enable_synchronization</string>
-
     <string name="pref_enable_true">Enabled</string>
     <string name="pref_enable_false">Disabled</string>
 
@@ -19,4 +16,22 @@
     <string name="pref_quote_default">Only those who dare to fail greatly can ever achieve greatly.</string>
     <string name="quote_label">Quote of the day:</string>
     <string name="notification_channel_name">TasksEdge Notifications</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="synchronization">Synchronization</string>
+    <string name="text_hint">Text</string>
+    <string name="due_date">Due Date</string>
+    <string name="quote_key">quoteText</string>
+    <string name="network_error">Error fetching quote</string>
+    <string name="notice_title">You have task!</string>
+    <string name="order_key">dueDate/time</string>
+    <string name="settings_title">Settings</string>
+    <string name="edit_task_title">Edit Task</string>
+    <string name="add_task_title">Add Task</string>
+    <string name="time_format">%d:%d</string>
+    <string name="time_picker_title">Select Time</string>
+    <string name="input_error">Text cant be empty!</string>
+    <string name="date_parse_error">DateTime parse Error</string>
+    <string name="add_new_task">Add new Task</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

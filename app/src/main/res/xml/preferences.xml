@@ -2,24 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:defaultValue="@bool/pref_show_done_default"
-        android:key="@string/pref_show_done_key"
-        android:summaryOff="@string/pref_enable_false"
-        android:summaryOn="@string/pref_enable_true"
-        android:title="@string/pref_show_done_label" />
-
-    <SwitchPreference
         android:defaultValue="@bool/pref_enable_notices_default"
         android:key="@string/pref_enable_notices_key"
         android:summaryOff="@string/pref_enable_false"
         android:summaryOn="@string/pref_enable_true"
         android:title="@string/pref_enable_notifications_label" />
-
-    <SwitchPreference
-        android:defaultValue="@bool/pref_enable_sync_default"
-        android:key="@string/pref_enable_synchronization_key"
-        android:summaryOff="@string/pref_enable_false"
-        android:summaryOn="@string/pref_enable_true"
-        android:title="@string/pref_enable_synchronization_label" />
 
 </PreferenceScreen>

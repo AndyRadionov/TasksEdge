@@ -65,7 +65,7 @@ public class QuoteFetcherUtils {
     }
 
     public static void updateQuote(Context context) {
-        String quote = fetchQuote();
+        String quote = fetchQuote(context);
 
         String quoteKey = context.getString(R.string.pref_quote_key);
         String quoteDateKey = context.getString(R.string.pref_quote_date_key);
@@ -76,7 +76,7 @@ public class QuoteFetcherUtils {
         editor.apply();
     }
 
-    private static String fetchQuote() {
+    private static String fetchQuote(Context context) {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -86,9 +86,9 @@ public class QuoteFetcherUtils {
             Response response = client.newCall(request).execute();
             String responseString = response.body().string();
             JSONObject responseJson = new JSONObject(responseString);
-            return responseJson.getString("quoteText");
+            return responseJson.getString(context.getString(R.string.quote_key));
         } catch (Exception e) {
-            Log.d(TAG, "Error fetching quote");
+            Log.d(TAG, context.getString(R.string.network_error));
             return null;
         }
     }

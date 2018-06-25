@@ -17,9 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,7 +33,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
 
 /**
  * @author Andrey Radionov
@@ -43,26 +48,38 @@ public class TaskActivity extends AppCompatActivity {
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
     private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyyHH:mm",
             Locale.ROOT);
+    public static final String ANALYTIC_PARAM_TEXT_LENGTH = "text_length";
+    public static final String ANALYTIC_EVENT_NEW_TASK_LENGTH = "add_new_task";
 
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
+    private FirebaseAuth mFirebaseAuth;
 
     private EditText mTextInput;
     private EditText mDateView;
     private EditText mTimeView;
-    private RadioGroup mPriorityGroup;
     private TextView mQuoteView;
     private Task mTask;
+    private boolean isNewTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference().child(mFirebaseAuth
+                        .getCurrentUser().getUid());
+
         Intent intent = getIntent();
         if (intent.hasExtra(TASK_EXTRA)) {
-            setUpToolbar("Edit Task");
+            setUpToolbar(getString(R.string.edit_task_title));
             mTask = intent.getParcelableExtra(TASK_EXTRA);
         } else {
-            setUpToolbar("Add Task");
+            isNewTask = true;
+            setUpToolbar(getString(R.string.add_task_title));
             mTask = new Task();
         }
 
@@ -82,20 +99,39 @@ public class TaskActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.action_done && checkInput()) {
             parseTaskInput();
-            Intent taskResult = new Intent();
-            taskResult.putExtra(TaskActivity.TASK_EXTRA, mTask);
-            setResult(RESULT_OK, taskResult);
+            if (isNewTask) {
+                String key = mDatabaseReference.push().getKey();
+                mTask.setKey(key);
+                mDatabaseReference.child(key).setValue(mTask);
+                logNewTaskLength();
+            } else {
+                mDatabaseReference.child(mTask.getKey()).setValue(mTask);
+                NotificationUtils.cancelNotification(this, mTask);
+            }
+            NotificationUtils.scheduleNotification(this, mTask);
             finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void logNewTaskLength() {
+        Bundle textLength = new Bundle();
+        textLength.putInt(ANALYTIC_PARAM_TEXT_LENGTH, mTask.getText().length());
+        FirebaseAnalytics.getInstance(this).logEvent(ANALYTIC_EVENT_NEW_TASK_LENGTH, textLength);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setQuote();
+    }
+
     private void setUpToolbar(String title) {
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
         toolbarTitle.setText(title);
-        toolbar.setNavigationIcon(R.drawable.ic_close_black);
+        toolbar.setNavigationIcon(R.drawable.ic_close_white);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -106,7 +142,6 @@ public class TaskActivity extends AppCompatActivity {
 
     private void initViews() {
         mTextInput = findViewById(R.id.et_input_text);
-        mPriorityGroup = findViewById(R.id.priority_radio_group);
         mDateView = findViewById(R.id.et_date);
         mTimeView = findViewById(R.id.et_time);
         mQuoteView = findViewById(R.id.tv_quote);
@@ -114,8 +149,6 @@ public class TaskActivity extends AppCompatActivity {
         mTextInput.setText(mTask.getText());
         mDateView.setText(DATE_FORMAT.format(mTask.getDueDate()));
         mTimeView.setText(TIME_FORMAT.format(mTask.getDueDate()));
-        setPriority();
-        setQuote();
     }
 
     private void setQuote() {
@@ -123,34 +156,7 @@ public class TaskActivity extends AppCompatActivity {
         String quoteDefault = getString(R.string.pref_quote_default);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String quote = prefs.getString(quoteKey, quoteDefault);
-        Log.d(TAG, "setQuote: " + quote);
         mQuoteView.setText(quote);
-    }
-
-    private void setPriority() {
-        switch (mTask.getPriority()) {
-            case 0:
-                mPriorityGroup.check(R.id.rb_low_priority);
-                break;
-            case 1:
-                mPriorityGroup.check(R.id.rb_norm_priority);
-                break;
-            case 2:
-                mPriorityGroup.check(R.id.rb_high_priority);
-                break;
-        }
-    }
-
-    private int parsePriority() {
-        switch (mPriorityGroup.getCheckedRadioButtonId()) {
-            case R.id.rb_low_priority:
-                return 0;
-            case R.id.rb_norm_priority:
-                return 1;
-            case R.id.rb_high_priority:
-                return 2;
-        }
-        return 0;
     }
 
     private void setUpDateTimePickers() {
@@ -191,12 +197,12 @@ public class TaskActivity extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour,
                                           int selectedMinute) {
-                        mTimeView.setText(String.format(Locale.ROOT, "%d:%d",
+                        mTimeView.setText(String.format(Locale.ROOT, getString(R.string.time_format),
                                 selectedHour, selectedMinute));
                     }
                 }, hour, minute, true);
 
-                mTimePicker.setTitle("Select Time");
+                mTimePicker.setTitle(getString(R.string.time_picker_title));
                 mTimePicker.show();
 
             }
@@ -206,7 +212,7 @@ public class TaskActivity extends AppCompatActivity {
     private boolean checkInput() {
         String text = mTextInput.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
-            mTextInput.setError("Text cant be empty!");
+            mTextInput.setError(getString(R.string.input_error));
             return false;
         }
         return true;
@@ -216,23 +222,15 @@ public class TaskActivity extends AppCompatActivity {
         String text = mTextInput.getText().toString().trim();
         String dateText = mDateView.getText().toString().trim();
         String timeText = mTimeView.getText().toString().trim();
-        int priority = parsePriority();
 
         mTask.setText(text);
-        mTask.setPriority(priority);
 
         try {
             Date date = DATE_TIME_FORMAT.parse(dateText + timeText);
             mTask.setDueDate(date);
         } catch (ParseException e) {
-            Log.d(TAG, "DateTime parse Error");
+            Log.d(TAG, getString(R.string.date_parse_error));
         }
 
-    }
-
-    //todo
-    private void getDateTimeFormat() {
-        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
-        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getApplicationContext());
     }
 }
