@@ -24,11 +24,11 @@
     </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.TextInputLayout
-        android:focusable="false"
         android:id="@+id/input_layout_text"
         android:layout_width="@dimen/text_input_width"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_input_margin_top"
+        android:focusable="false"
         app:errorEnabled="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -54,12 +54,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/input_layout_text" />
 
-
     <EditText
         android:id="@+id/et_date"
         android:layout_width="@dimen/date_input_width"
         android:layout_height="wrap_content"
         android:focusable="false"
+        android:hint="@string/input_day_hint"
         android:inputType="date"
         app:layout_constraintLeft_toLeftOf="@id/tv_task_date_label"
         app:layout_constraintTop_toBottomOf="@id/tv_task_date_label" />
@@ -69,6 +69,7 @@
         android:layout_width="@dimen/date_input_width"
         android:layout_height="wrap_content"
         android:focusable="false"
+        android:hint="@string/time_input_hint"
         android:inputType="time"
         app:layout_constraintRight_toRightOf="@id/tv_task_date_label"
         app:layout_constraintTop_toBottomOf="@id/tv_task_date_label" />
