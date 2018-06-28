@@ -26,12 +26,13 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
+import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
 import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
-import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
+import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
+import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
@@ -118,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements
            Log.d(TAG, "onSharedPreferenceChanged: notifications");
            boolean notificationsEnabled = sharedPreferences.getBoolean(key,
                     getResources().getBoolean(R.bool.pref_enable_notices_default));
-           NotificationUtils.setNotificationsEnabled(this, notificationsEnabled);
+           NotificationManager.setNotificationsEnabled(this, notificationsEnabled);
            if (notificationsEnabled) {
-                NotificationUtils.scheduleAllNotifications(this);
+                NotificationManager.scheduleAllNotifications(this);
             } else {
-                NotificationUtils.cancelAllNotifications(this);
+                NotificationManager.cancelAllNotifications(this);
             }
        }
     }
@@ -145,8 +146,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onTaskAdded(Task task) {
         Log.d(TAG, "onTaskAdded: " + task);
         mTasksAdapter.addTask(task);
-        if (isNotificationsEnabled()) {
-            NotificationUtils.scheduleNotification(MainActivity.this, task);
+        if (PreferenceUtils.isNotificationsEnabled(this)) {
+            NotificationManager.scheduleNotification(MainActivity.this, task);
         }
     }
 
@@ -154,8 +155,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onTaskUpdated(Task task) {
         Log.d(TAG, "onTaskUpdated: " + task);
         mTasksAdapter.sort();
-        if (isNotificationsEnabled()) {
-            NotificationUtils.updateNotification(MainActivity.this, task);
+        if (PreferenceUtils.isNotificationsEnabled(this)) {
+            NotificationManager.updateNotification(MainActivity.this, task);
         }
     }
 
@@ -163,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onTaskRemoved(Task task) {
         Log.d(TAG, "onTaskRemoved: " + task);
         mTasksAdapter.removeTask(task);
-        if (isNotificationsEnabled()) {
-            NotificationUtils.cancelNotification(MainActivity.this, task);
+        if (PreferenceUtils.isNotificationsEnabled(this)) {
+            NotificationManager.cancelNotification(MainActivity.this, task);
         }
     }
 
@@ -278,16 +279,5 @@ public class MainActivity extends AppCompatActivity implements
         if (mRepository != null) {
             mRepository.detachDatabaseReadListener();
         }
-    }
-
-    //todo
-    private boolean isNotificationsEnabled() {
-        Log.d(TAG, "isNotificationsEnabled");
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String enableNoticesKey = getString(R.string.pref_enable_notices_key);
-        boolean noticesEnabledDefault = getResources()
-                .getBoolean(R.bool.pref_enable_notices_default);
-        return sharedPreferences.getBoolean(enableNoticesKey, noticesEnabledDefault);
     }
 }

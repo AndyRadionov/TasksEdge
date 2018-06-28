@@ -51,9 +51,9 @@ public class NotificationIntentService extends IntentService implements Reposito
     public void onTaskAdded(Task task) {
         Log.d(TAG, "onTaskAdded: " + task);
         if (mAction.equals(ACTION_SCHEDULE_ALL)) {
-            NotificationUtils.scheduleNotification(NotificationIntentService.this, task);
+            NotificationManager.scheduleNotification(NotificationIntentService.this, task);
         } else if (mAction.equals(ACTION_CANCEL_ALL)) {
-            NotificationUtils.cancelNotification(NotificationIntentService.this, task);
+            NotificationManager.cancelNotification(NotificationIntentService.this, task);
         }
     }
 

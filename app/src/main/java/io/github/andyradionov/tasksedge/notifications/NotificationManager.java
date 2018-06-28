@@ -3,7 +3,6 @@ package io.github.andyradionov.tasksedge.notifications;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,8 +23,8 @@ import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.ui.MainActivity;
 
 
-public class NotificationUtils {
-    private static final String TAG = NotificationUtils.class.getSimpleName();
+public class NotificationManager {
+    private static final String TAG = NotificationManager.class.getSimpleName();
     private static final int TASKS_PENDING_INTENT_ID = 8476;
     private static final String TASKS_NOTIFICATION_CHANNEL_ID = "tasks_notification_channel";
     private static final String TASKS_EDGE_NOTIFICATION_GROUP = "TasksEdge Notifications";
@@ -86,7 +85,7 @@ public class NotificationUtils {
 
     private static synchronized Notification createNotification(Context context, String text) {
         Log.d(TAG, "createNotification: " + text);
-        NotificationManager notificationManager = (NotificationManager)
+        android.app.NotificationManager notificationManager = (android.app.NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager == null) return null;
 
@@ -94,7 +93,7 @@ public class NotificationUtils {
             NotificationChannel mChannel = new NotificationChannel(
                     TASKS_NOTIFICATION_CHANNEL_ID,
                     context.getString(R.string.notification_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH);
+                    android.app.NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
         }
 

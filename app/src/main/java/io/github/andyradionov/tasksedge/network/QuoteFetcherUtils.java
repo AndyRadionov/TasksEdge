@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -68,13 +69,7 @@ public class QuoteFetcherUtils {
         Log.d(TAG, "updateQuote");
         String quote = fetchQuote(context);
 
-        String quoteKey = context.getString(R.string.pref_quote_key);
-        String quoteDateKey = context.getString(R.string.pref_quote_date_key);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(quoteKey, quote);
-        editor.putLong(quoteDateKey, new Date().getTime());
-        editor.apply();
+        PreferenceUtils.saveQuote(context, quote);
     }
 
     private static String fetchQuote(Context context) {

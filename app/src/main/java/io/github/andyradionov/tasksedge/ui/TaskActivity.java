@@ -3,11 +3,9 @@ package io.github.andyradionov.tasksedge.ui;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,9 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -30,9 +25,10 @@ import java.util.Locale;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.model.Task;
-import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
+import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
+import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
 
 /**
  * @author Andrey Radionov
@@ -95,9 +91,9 @@ public class TaskActivity extends AppCompatActivity {
             } else {
                 Log.d(TAG, "onOptionsItemSelected: Edit Task");
                 mRepository.updateValue(mTask);
-                NotificationUtils.cancelNotification(this, mTask);
+                NotificationManager.cancelNotification(this, mTask);
             }
-            NotificationUtils.scheduleNotification(this, mTask);
+            NotificationManager.scheduleNotification(this, mTask);
             finish();
             return true;
         } else if (item.getItemId() == android.R.id.home) {
@@ -107,8 +103,6 @@ public class TaskActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public void finish() {
@@ -151,10 +145,7 @@ public class TaskActivity extends AppCompatActivity {
 
     private void setQuote() {
         Log.d(TAG, "setQuote");
-        String quoteKey = getString(R.string.pref_quote_key);
-        String quoteDefault = getString(R.string.pref_quote_default);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String quote = prefs.getString(quoteKey, quoteDefault);
+        String quote = PreferenceUtils.getQuote(this);
         mQuoteView.setText(quote);
     }
 
