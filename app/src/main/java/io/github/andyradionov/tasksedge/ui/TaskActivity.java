@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.database.Repository;
 import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
 
@@ -52,9 +53,7 @@ public class TaskActivity extends AppCompatActivity {
     public static final String ANALYTIC_EVENT_NEW_TASK_LENGTH = "add_new_task";
 
 
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
-    private FirebaseAuth mFirebaseAuth;
+    private Repository mRepository;
 
     private EditText mTextInput;
     private EditText mDateView;
@@ -68,10 +67,7 @@ public class TaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference().child(mFirebaseAuth
-                        .getCurrentUser().getUid());
+        mRepository = Repository.getInstance();
 
         Intent intent = getIntent();
         if (intent.hasExtra(TASK_EXTRA)) {
@@ -100,12 +96,10 @@ public class TaskActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_done && checkInput()) {
             parseTaskInput();
             if (isNewTask) {
-                String key = mDatabaseReference.push().getKey();
-                mTask.setKey(key);
-                mDatabaseReference.child(key).setValue(mTask);
+                mRepository.addValue(mTask);
                 logNewTaskLength();
             } else {
-                mDatabaseReference.child(mTask.getKey()).setValue(mTask);
+                mRepository.updateValue(mTask);
                 NotificationUtils.cancelNotification(this, mTask);
             }
             NotificationUtils.scheduleNotification(this, mTask);

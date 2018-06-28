@@ -54,12 +54,14 @@ public class NotificationUtils {
     }
 
     public static synchronized void scheduleAllNotifications(Context context) {
-        Intent noticeIntent = new Intent(NotificationIntentService.ACTION_SCHEDULE_ALL);
+        Intent noticeIntent = new Intent(context, NotificationIntentService.class);
+        noticeIntent.setAction(NotificationIntentService.ACTION_SCHEDULE_ALL);
         context.startService(noticeIntent);
     }
 
     public static synchronized void cancelAllNotifications(Context context) {
-        Intent noticeIntent = new Intent(NotificationIntentService.ACTION_CANCEL_ALL);
+        Intent noticeIntent = new Intent(context, NotificationIntentService.class);
+        noticeIntent.setAction(NotificationIntentService.ACTION_CANCEL_ALL);
         context.startService(noticeIntent);
     }
 

@@ -22,11 +22,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,6 +30,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
+import io.github.andyradionov.tasksedge.database.Repository;
 import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
@@ -46,7 +43,8 @@ import static android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 public class MainActivity extends AppCompatActivity implements
         TasksAdapter.OnTaskCheckBoxClickListener,
         TasksAdapter.OnTaskCardClickListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        RepositoryCallbacks {
 
     private static final DateFormat DATE_FORMAT =
             new SimpleDateFormat("dd:MM:yyyy, HH:mm", Locale.ROOT);
@@ -55,11 +53,9 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView mTasksRecycler;
     private TasksAdapter mTasksAdapter;
 
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
-    private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private Repository mRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,32 +68,10 @@ public class MainActivity extends AppCompatActivity implements
         setUpToolbar();
         setUpFab();
         setUpRecycler();
+        setupAuthListener();
+
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
-
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    onSignedInInitialize();
-                } else {
-                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setAvailableProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.EmailBuilder().build(),
-                                            new AuthUI.IdpConfig.GoogleBuilder().build()))
-                                    .build(),
-                            RC_SIGN_IN);
-
-                }
-            }
-        };
-        mTasksAdapter.clear();
-        detachDatabaseReadListener();
     }
 
     private void logOpenDate() {
@@ -116,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        detachDatabaseReadListener();
+        detachDatabaseListener();
         mTasksAdapter.clear();
     }
 
@@ -134,55 +108,6 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-    private void onSignedInInitialize() {
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference().child(mFirebaseAuth
-                .getCurrentUser().getUid());
-        attachDatabaseReadListener();
-    }
-
-    private void onSignedOutCleanup() {
-        mTasksAdapter.clear();
-        detachDatabaseReadListener();
-    }
-
-    private void attachDatabaseReadListener() {
-        if (mChildEventListener == null) {
-            mChildEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                    Task task = dataSnapshot.getValue(Task.class);
-                    mTasksAdapter.add(task);
-                    if (isNotificationsEnabled()) {
-                        NotificationUtils.scheduleNotification(MainActivity.this, task);
-                    }
-                }
-
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-                    Task task = dataSnapshot.getValue(Task.class);
-                    mTasksAdapter.sort();
-                    if (isNotificationsEnabled()) {
-                        NotificationUtils.updateNotification(MainActivity.this, task);
-                    }
-                }
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    Task task = dataSnapshot.getValue(Task.class);
-                    mTasksAdapter.remove(task);
-                }
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {}
-                public void onCancelled(@NonNull DatabaseError databaseError) {}
-            };
-            mDatabaseReference.orderByChild(getString(R.string.order_key)).addChildEventListener(mChildEventListener);
-        }
-    }
-
-    private void detachDatabaseReadListener() {
-        if (mChildEventListener != null) {
-            mDatabaseReference.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_settings) {
@@ -191,18 +116,6 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCheckClick(@NonNull Task task) {
-        mDatabaseReference.child(task.getKey()).removeValue();
-    }
-
-    @Override
-    public void onCardClick(@NonNull Task task) {
-        Intent editTaskIntent = new Intent(this, TaskActivity.class);
-        editTaskIntent.putExtra(TaskActivity.TASK_EXTRA, task);
-        startActivity(editTaskIntent);
     }
 
     @Override
@@ -217,6 +130,42 @@ public class MainActivity extends AppCompatActivity implements
                 NotificationUtils.cancelAllNotifications(this);
             }
        }
+    }
+
+    @Override
+    public void onCheckClick(@NonNull Task task) {
+        mRepository.removeValue(task.getKey());
+    }
+
+    @Override
+    public void onCardClick(@NonNull Task task) {
+        Intent editTaskIntent = new Intent(this, TaskActivity.class);
+        editTaskIntent.putExtra(TaskActivity.TASK_EXTRA, task);
+        startActivity(editTaskIntent);
+    }
+
+    @Override
+    public void onTaskAdded(Task task) {
+        mTasksAdapter.add(task);
+        if (isNotificationsEnabled()) {
+            NotificationUtils.scheduleNotification(MainActivity.this, task);
+        }
+    }
+
+    @Override
+    public void onTaskUpdated(Task task) {
+        mTasksAdapter.sort();
+        if (isNotificationsEnabled()) {
+            NotificationUtils.updateNotification(MainActivity.this, task);
+        }
+    }
+
+    @Override
+    public void onTaskRemoved(Task task) {
+        mTasksAdapter.remove(task);
+        if (isNotificationsEnabled()) {
+            NotificationUtils.cancelNotification(MainActivity.this, task);
+        }
     }
 
     @Override
@@ -270,13 +219,53 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 String key = (String) viewHolder.itemView.getTag();
-                mDatabaseReference.child(key).removeValue();
+                mRepository.removeValue(key);
             }
         });
         touchHelper.attachToRecyclerView(mTasksRecycler);
     }
 
-    public boolean isNotificationsEnabled() {
+    private void setupAuthListener() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    onSignedInInitialize();
+                } else {
+                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setAvailableProviders(Arrays.asList(
+                                            new AuthUI.IdpConfig.EmailBuilder().build(),
+                                            new AuthUI.IdpConfig.GoogleBuilder().build()))
+                                    .build(),
+                            RC_SIGN_IN);
+
+                }
+            }
+        };
+    }
+
+    private void onSignedInInitialize() {
+        mRepository = Repository.getInstance();
+        mRepository.attachDatabaseListener(getString(R.string.order_key), this);
+    }
+
+    private void onSignedOutCleanup() {
+        mTasksAdapter.clear();
+        detachDatabaseListener();
+    }
+
+    private void detachDatabaseListener() {
+        if (mRepository != null) {
+            mRepository.detachDatabaseReadListener();
+        }
+    }
+
+    private boolean isNotificationsEnabled() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String enableNoticesKey = getString(R.string.pref_enable_notices_key);
