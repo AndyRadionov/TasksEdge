@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -24,12 +25,13 @@ import io.github.andyradionov.tasksedge.ui.MainActivity;
 
 
 public class NotificationUtils {
-
+    private static final String TAG = NotificationUtils.class.getSimpleName();
     private static final int TASKS_PENDING_INTENT_ID = 8476;
     private static final String TASKS_NOTIFICATION_CHANNEL_ID = "tasks_notification_channel";
     private static final String TASKS_EDGE_NOTIFICATION_GROUP = "TasksEdge Notifications";
 
     public static synchronized void scheduleNotification(Context context, Task task) {
+        Log.d(TAG, "scheduleNotification: " + task);
         if (task.getDueDate().compareTo(new Date()) <= 0) return;
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
@@ -41,6 +43,7 @@ public class NotificationUtils {
 
 
     public static synchronized void cancelNotification(Context context, Task task) {
+        Log.d(TAG, "cancelNotification: " + task);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
 
@@ -49,23 +52,27 @@ public class NotificationUtils {
     }
 
     public static synchronized void updateNotification(Context context, Task task) {
+        Log.d(TAG, "updateNotification: " + task);
         cancelNotification(context, task);
         scheduleNotification(context, task);
     }
 
     public static synchronized void scheduleAllNotifications(Context context) {
+        Log.d(TAG, "scheduleAllNotifications" );
         Intent noticeIntent = new Intent(context, NotificationIntentService.class);
         noticeIntent.setAction(NotificationIntentService.ACTION_SCHEDULE_ALL);
         context.startService(noticeIntent);
     }
 
     public static synchronized void cancelAllNotifications(Context context) {
+        Log.d(TAG, "cancelAllNotifications");
         Intent noticeIntent = new Intent(context, NotificationIntentService.class);
         noticeIntent.setAction(NotificationIntentService.ACTION_CANCEL_ALL);
         context.startService(noticeIntent);
     }
 
     public static synchronized void setNotificationsEnabled(Context context, boolean isEnabled) {
+        Log.d(TAG, "setNotificationsEnabled: " + isEnabled);
         ComponentName receiver = new ComponentName(context, BootReceiver.class);
         PackageManager pm = context.getPackageManager();
 
@@ -78,7 +85,7 @@ public class NotificationUtils {
     }
 
     private static synchronized Notification createNotification(Context context, String text) {
-
+        Log.d(TAG, "createNotification: " + text);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager == null) return null;
@@ -112,7 +119,7 @@ public class NotificationUtils {
     }
 
     private static synchronized PendingIntent createContentIntent(Context context) {
-
+        Log.d(TAG, "createContentIntent");
         Intent startActivityIntent = new Intent(context, MainActivity.class);
         return PendingIntent.getActivity(
                 context,
@@ -122,6 +129,7 @@ public class NotificationUtils {
     }
 
     private static synchronized PendingIntent createBroadcastIntent(Context context, Task task) {
+        Log.d(TAG, "createBroadcastIntent: " + task);
         int id = task.getId();
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.EXTRA_NOTIFICATION_ID, id);
@@ -132,6 +140,7 @@ public class NotificationUtils {
     }
 
     private static synchronized Bitmap largeIcon(Context context) {
+        Log.d(TAG, "largeIcon");
         Resources resources = context.getResources();
         return BitmapFactory.decodeResource(resources, R.drawable.ic_done_white);
     }

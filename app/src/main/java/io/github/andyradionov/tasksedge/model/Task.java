@@ -108,4 +108,14 @@ public class Task implements Parcelable {
     public int hashCode() {
         return key.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "key='" + key + '\'' +
+                ", id=" + id +
+                ", text='" + text + '\'' +
+                ", dueDate=" + dueDate +
+                '}';
+    }
 }

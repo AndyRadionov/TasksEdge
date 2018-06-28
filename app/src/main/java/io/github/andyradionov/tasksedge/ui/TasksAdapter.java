@@ -4,54 +4,49 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.utils.DateUtils;
 
 /**
  * @author Andrey Radionov
  */
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
-    private static final DateFormat DATE_FORMAT =
-            new SimpleDateFormat("dd:MM:yyyy, HH:mm", Locale.ROOT);
 
-    interface OnTaskCheckBoxClickListener {
-        void onCheckClick(@NonNull Task task);
-    }
+    private static final String TAG = TasksAdapter.class.getSimpleName();
+
     interface OnTaskCardClickListener {
         void onCardClick(@NonNull Task task);
+        void onCheckClick(@NonNull Task task);
     }
 
     private List<Task> mTasks;
-
-    private OnTaskCheckBoxClickListener mCheckBoxClickListener;
     private OnTaskCardClickListener mCardClickListener;
-    private Comparator<Task> mComparator = intComparator();
+    private Comparator<Task> mComparator = initComparator();
 
-    public TasksAdapter(OnTaskCheckBoxClickListener checkBoxClickListener,
-                        OnTaskCardClickListener cardClickListener) {
+    public TasksAdapter(OnTaskCardClickListener cardClickListener) {
+        Log.d(TAG, "TasksAdapter: constructor call");
         mTasks = new ArrayList<>();
-        mCheckBoxClickListener = checkBoxClickListener;
         mCardClickListener = cardClickListener;
     }
 
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder");
         final CardView taskCard = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_task, parent, false);
 
@@ -60,32 +55,38 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder");
         Task task = mTasks.get(position);
         holder.bind(task);
     }
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "getItemCount");
         return mTasks != null ? mTasks.size() : 0;
     }
 
     public void clear() {
+        Log.d(TAG, "clear");
         mTasks.clear();
         notifyDataSetChanged();
     }
 
-    public void add(Task task) {
+    public void addTask(Task task) {
+        Log.d(TAG, "addTask: " + task);
         mTasks.add(0, task);
         sort();
         notifyDataSetChanged();
     }
 
-    public void remove(Task task) {
+    public void removeTask(Task task) {
+        Log.d(TAG, "removeTask: " + task);
         mTasks.remove(task);
         notifyDataSetChanged();
     }
 
     public void sort() {
+        Log.d(TAG, "sort");
         Collections.sort(mTasks, mComparator);
         notifyDataSetChanged();
     }
@@ -97,6 +98,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         private TaskViewHolder(View itemView) {
             super(itemView);
+            Log.d(TAG, "TaskViewHolder: constructor call");
             taskTextView = itemView.findViewById(R.id.tv_task_text);
             taskDateView = itemView.findViewById(R.id.tv_task_date);
             isTaskDoneView = itemView.findViewById(R.id.cb_is_done);
@@ -105,9 +107,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         }
 
         private void bind(Task task) {
+            Log.d(TAG, "bind: " + task);
             itemView.setTag(task.getKey());
             taskTextView.setText(task.getText());
-            taskDateView.setText(DATE_FORMAT.format(task.getDueDate()));
+            taskDateView.setText(DateUtils.formatDateTime(task.getDueDate()));
             setCardChecked(false);
         }
 
@@ -118,17 +121,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
             switch (v.getId()) {
                 case R.id.cb_is_done:
-                    mCheckBoxClickListener.onCheckClick(task);
+                    Log.d(TAG, "onClick: onCheckClick: " + task);
+                    mCardClickListener.onCheckClick(task);
                     setCardChecked(true);
                     break;
                 case R.id.cv_task_card:
+                    Log.d(TAG, "onClick: onCardClick: " + task);
                     mCardClickListener.onCardClick(task);
-                    break;
             }
         }
 
         private void setCardChecked(boolean isChecked) {
-
+            Log.d(TAG, "setCardChecked: " + isChecked);
             int flag = isChecked ? taskTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                     : taskTextView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG;
 
@@ -138,7 +142,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         }
     }
 
-    private Comparator<Task> intComparator() {
+    private Comparator<Task> initComparator() {
+        Log.d(TAG, "initComparator");
         return new Comparator<Task>() {
             @Override
             public int compare(Task o1, Task o2) {

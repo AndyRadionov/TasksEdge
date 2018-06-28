@@ -11,14 +11,16 @@ import com.firebase.jobdispatcher.JobService;
  */
 
 public class QuoteFirebaseJobService extends JobService {
-
+    private static final String TAG = QuoteFirebaseJobService.class.getSimpleName();
     AsyncTask<Void, Void, Void> mQuoteBackgroundTask;
 
     @Override
     public boolean onStartJob(final JobParameters job) {
+        Log.d(TAG, "onStartJob");
         mQuoteBackgroundTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                Log.d(TAG, "doInBackground");
                 QuoteFetcherUtils.updateQuote(QuoteFirebaseJobService.this);
                 jobFinished(job, true);
                 return null;
@@ -35,6 +37,7 @@ public class QuoteFirebaseJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters job) {
+        Log.d(TAG, "onStopJob");
         if (mQuoteBackgroundTask != null) {
             mQuoteBackgroundTask.cancel(true);
         }

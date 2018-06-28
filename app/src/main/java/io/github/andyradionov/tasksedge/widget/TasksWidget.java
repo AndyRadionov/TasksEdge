@@ -16,10 +16,11 @@ import io.github.andyradionov.tasksedge.ui.TaskActivity;
  * Implementation of App Widget functionality.
  */
 public class TasksWidget extends AppWidgetProvider {
+    private static final String TAG = TasksWidget.class.getSimpleName();
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
+        Log.d(TAG, "updateAppWidget");
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.tasks_widget);
 
         views.setOnClickPendingIntent(R.id.widget,
@@ -34,6 +35,7 @@ public class TasksWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d(TAG, "onUpdate");
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
@@ -46,6 +48,7 @@ public class TasksWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {}
 
     private static PendingIntent getAddTaskPendingIntent(Context context, Class activity) {
+        Log.d(TAG, "getAddTaskPendingIntent");
         Intent intent = new Intent(context, activity);
         return PendingIntent.getActivity(context, 0, intent, 0);
     }

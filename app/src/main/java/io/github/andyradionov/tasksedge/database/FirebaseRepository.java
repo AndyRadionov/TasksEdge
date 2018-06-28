@@ -1,6 +1,7 @@
 package io.github.andyradionov.tasksedge.database;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -15,37 +16,43 @@ import io.github.andyradionov.tasksedge.model.Task;
  * @author Andrey Radionov
  */
 
-public class Repository {
-    private static final Repository INSTANCE = new Repository();
+public class FirebaseRepository {
+    private static final String TAG = FirebaseRepository.class.getSimpleName();
+    private static final FirebaseRepository INSTANCE = new FirebaseRepository();
 
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
 
-    private Repository() {
+    private FirebaseRepository() {
+        Log.d(TAG, "FirebaseRepository constructor call");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = firebaseDatabase.getReference().child(firebaseAuth
                 .getCurrentUser().getUid());
     }
 
-    public static Repository getInstance() {
+    public static FirebaseRepository getInstance() {
         return INSTANCE;
     }
 
     public void attachDatabaseListener(String sortOrder, final RepositoryCallbacks dbCallbacks) {
         if (mChildEventListener == null) {
+            Log.d(TAG, "attachDatabaseListener");
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
+                    Log.d(TAG, "onChildAdded");
                     Task task = dataSnapshot.getValue(Task.class);
                     dbCallbacks.onTaskAdded(task);
                 }
 
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+                    Log.d(TAG, "onChildChanged");
                     Task task = dataSnapshot.getValue(Task.class);
                     dbCallbacks.onTaskUpdated(task);
                 }
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "onChildRemoved");
                     Task task = dataSnapshot.getValue(Task.class);
                     dbCallbacks.onTaskRemoved(task);
                 }
@@ -58,22 +65,26 @@ public class Repository {
 
     public void detachDatabaseReadListener() {
         if (mChildEventListener != null) {
+            Log.d(TAG, "detachDatabaseReadListener");
             mDatabaseReference.removeEventListener(mChildEventListener);
             mChildEventListener = null;
         }
     }
 
     public void addValue(Task task) {
+        Log.d(TAG, "addValue: " + task);
         String key = mDatabaseReference.push().getKey();
         task.setKey(key);
         mDatabaseReference.child(key).setValue(task);
     }
 
     public void updateValue(Task task) {
+        Log.d(TAG, "updateValue: " + task);
         mDatabaseReference.child(task.getKey()).setValue(task);
     }
 
     public void removeValue(String key) {
+        Log.d(TAG, "removeValue for key: " + key);
         mDatabaseReference.child(key).removeValue();
     }
 }

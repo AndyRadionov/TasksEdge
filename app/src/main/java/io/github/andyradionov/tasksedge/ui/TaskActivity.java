@@ -28,25 +28,22 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.Repository;
+import io.github.andyradionov.tasksedge.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
+import io.github.andyradionov.tasksedge.utils.DateUtils;
 
 /**
  * @author Andrey Radionov
  */
 
 public class TaskActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     public static final String TASK_EXTRA = "task_extra";
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.ROOT);
-    private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
-    private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyyHH:mm",
-            Locale.ROOT);
-
-    private Repository mRepository;
+    private FirebaseRepository mRepository;
 
     private EditText mTextInput;
     private EditText mDateView;
@@ -58,9 +55,10 @@ public class TaskActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_task);
 
-        mRepository = Repository.getInstance();
+        mRepository = FirebaseRepository.getInstance();
 
         Intent intent = getIntent();
         if (intent.hasExtra(TASK_EXTRA)) {
@@ -78,6 +76,7 @@ public class TaskActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_task, menu);
         return true;
@@ -87,11 +86,14 @@ public class TaskActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_done && checkInput()) {
+            Log.d(TAG, "onOptionsItemSelected: Action Done");
             parseTaskInput();
             if (isNewTask) {
+                Log.d(TAG, "onOptionsItemSelected: Add New Task");
                 mRepository.addValue(mTask);
                 AnalyticsUtils.logNewTaskLengthEvent(this, mTask.getText().length());
             } else {
+                Log.d(TAG, "onOptionsItemSelected: Edit Task");
                 mRepository.updateValue(mTask);
                 NotificationUtils.cancelNotification(this, mTask);
             }
@@ -99,6 +101,7 @@ public class TaskActivity extends AppCompatActivity {
             finish();
             return true;
         } else if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, "onOptionsItemSelected: Home");
             finish();
             return true;
         }
@@ -116,10 +119,12 @@ public class TaskActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         setQuote();
     }
 
     private void setUpToolbar(String title) {
+        Log.d(TAG, "setUpToolbar");
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
         toolbarTitle.setText(title);
@@ -133,17 +138,19 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        Log.d(TAG, "initViews");
         mTextInput = findViewById(R.id.et_input_text);
         mDateView = findViewById(R.id.et_date);
         mTimeView = findViewById(R.id.et_time);
         mQuoteView = findViewById(R.id.tv_quote);
 
         mTextInput.setText(mTask.getText());
-        mDateView.setText(DATE_FORMAT.format(mTask.getDueDate()));
-        mTimeView.setText(TIME_FORMAT.format(mTask.getDueDate()));
+        mDateView.setText(DateUtils.formatDate(mTask.getDueDate()));
+        mTimeView.setText(DateUtils.formatTime(mTask.getDueDate()));
     }
 
     private void setQuote() {
+        Log.d(TAG, "setQuote");
         String quoteKey = getString(R.string.pref_quote_key);
         String quoteDefault = getString(R.string.pref_quote_default);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -152,6 +159,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void setUpDateTimePickers() {
+        Log.d(TAG, "setUpDateTimePickers");
         final Calendar calendar = Calendar.getInstance();
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -161,7 +169,7 @@ public class TaskActivity extends AppCompatActivity {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                mDateView.setText(DATE_FORMAT.format(calendar.getTime()));
+                mDateView.setText(DateUtils.formatDate(calendar.getTime()));
             }
 
         };
@@ -202,6 +210,7 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private boolean checkInput() {
+        Log.d(TAG, "checkInput");
         String text = mTextInput.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
             mTextInput.setError(getString(R.string.input_error));
@@ -211,18 +220,16 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     private void parseTaskInput() {
+        Log.d(TAG, "parseTaskInput");
         String text = mTextInput.getText().toString().trim();
         String dateText = mDateView.getText().toString().trim();
         String timeText = mTimeView.getText().toString().trim();
 
         mTask.setText(text);
 
-        try {
-            Date date = DATE_TIME_FORMAT.parse(dateText + ", " + timeText);
+        Date date = DateUtils.parseDateTime(dateText + ", " + timeText);
+        if (date != null) {
             mTask.setDueDate(date);
-        } catch (ParseException e) {
-            Log.d(TAG, getString(R.string.date_parse_error));
         }
-
     }
 }

@@ -42,8 +42,8 @@ public class QuoteFetcherUtils {
     }
 
     public static synchronized void scheduleUpdate(Context context) {
-
         if (sInitialized) return;
+        Log.d(TAG, "scheduleUpdate");
 
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
@@ -65,6 +65,7 @@ public class QuoteFetcherUtils {
     }
 
     public static void updateQuote(Context context) {
+        Log.d(TAG, "updateQuote");
         String quote = fetchQuote(context);
 
         String quoteKey = context.getString(R.string.pref_quote_key);
@@ -77,6 +78,7 @@ public class QuoteFetcherUtils {
     }
 
     private static String fetchQuote(Context context) {
+        Log.d(TAG, "fetchQuote");
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
