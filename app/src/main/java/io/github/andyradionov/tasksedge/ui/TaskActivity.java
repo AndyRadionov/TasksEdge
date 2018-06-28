@@ -20,11 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +31,7 @@ import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.Repository;
 import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
+import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 
 /**
  * @author Andrey Radionov
@@ -49,9 +45,6 @@ public class TaskActivity extends AppCompatActivity {
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
     private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyyHH:mm",
             Locale.ROOT);
-    public static final String ANALYTIC_PARAM_TEXT_LENGTH = "text_length";
-    public static final String ANALYTIC_EVENT_NEW_TASK_LENGTH = "add_new_task";
-
 
     private Repository mRepository;
 
@@ -97,7 +90,7 @@ public class TaskActivity extends AppCompatActivity {
             parseTaskInput();
             if (isNewTask) {
                 mRepository.addValue(mTask);
-                logNewTaskLength();
+                AnalyticsUtils.logNewTaskLengthEvent(this, mTask.getText().length());
             } else {
                 mRepository.updateValue(mTask);
                 NotificationUtils.cancelNotification(this, mTask);
@@ -105,14 +98,19 @@ public class TaskActivity extends AppCompatActivity {
             NotificationUtils.scheduleNotification(this, mTask);
             finish();
             return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void logNewTaskLength() {
-        Bundle textLength = new Bundle();
-        textLength.putInt(ANALYTIC_PARAM_TEXT_LENGTH, mTask.getText().length());
-        FirebaseAnalytics.getInstance(this).logEvent(ANALYTIC_EVENT_NEW_TASK_LENGTH, textLength);
+
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down);
     }
 
     @Override
@@ -220,7 +218,7 @@ public class TaskActivity extends AppCompatActivity {
         mTask.setText(text);
 
         try {
-            Date date = DATE_TIME_FORMAT.parse(dateText + timeText);
+            Date date = DATE_TIME_FORMAT.parse(dateText + ", " + timeText);
             mTask.setDueDate(date);
         } catch (ParseException e) {
             Log.d(TAG, getString(R.string.date_parse_error));

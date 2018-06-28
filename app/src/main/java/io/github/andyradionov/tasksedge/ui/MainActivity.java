@@ -19,14 +19,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.tasksedge.R;
@@ -35,6 +33,7 @@ import io.github.andyradionov.tasksedge.database.Repository;
 import io.github.andyradionov.tasksedge.model.Task;
 import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.notifications.NotificationUtils;
+import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        logOpenDate();
+        AnalyticsUtils.logAppOpenEvent(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
         QuoteFetcherUtils.scheduleUpdate(this);
 
@@ -72,12 +71,6 @@ public class MainActivity extends AppCompatActivity implements
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
-    }
-
-    private void logOpenDate() {
-        Bundle openDate = new Bundle();
-        openDate.putString(FirebaseAnalytics.Param.START_DATE, DATE_FORMAT.format(new Date()));
-        FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.APP_OPEN, openDate);
     }
 
     @Override
@@ -177,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void startTaskActivityAnimate(Intent intent) {
+
+    }
+
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
@@ -196,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
                 startActivity(addNewTask);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
     }

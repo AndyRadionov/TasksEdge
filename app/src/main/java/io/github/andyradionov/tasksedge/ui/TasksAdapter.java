@@ -109,7 +109,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             taskTextView.setText(task.getText());
             taskDateView.setText(DATE_FORMAT.format(task.getDueDate()));
             setCardChecked(false);
-
         }
 
         @Override
