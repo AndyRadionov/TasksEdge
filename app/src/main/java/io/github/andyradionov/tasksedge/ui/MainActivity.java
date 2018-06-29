@@ -38,6 +38,7 @@ public class MainActivity extends BaseActivity implements
         TasksAdapter.OnTaskCardClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         RepositoryCallbacks {
+
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 324;
 
@@ -53,6 +54,7 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_main);
+
         AnalyticsUtils.logAppOpenEvent(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
         QuoteFetcherUtils.scheduleUpdate(this);

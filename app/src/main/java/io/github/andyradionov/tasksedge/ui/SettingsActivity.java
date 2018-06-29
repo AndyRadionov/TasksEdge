@@ -1,13 +1,9 @@
 package io.github.andyradionov.tasksedge.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 
@@ -24,12 +20,6 @@ public class SettingsActivity extends BaseActivity {
         setUpToolbar(getString(R.string.settings_title), R.drawable.ic_back_white);
     }
 
-    public void signOut(View view) {
-        Log.d(TAG, "signOut");
-        AuthUI.getInstance().signOut(this);
-        finish();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
@@ -42,5 +32,11 @@ public class SettingsActivity extends BaseActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+    }
+
+    public void signOut(View view) {
+        Log.d(TAG, "signOut");
+        AuthUI.getInstance().signOut(this);
+        finish();
     }
 }

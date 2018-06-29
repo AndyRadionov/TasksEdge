@@ -2,12 +2,8 @@ package io.github.andyradionov.tasksedge.ui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.arch.core.util.Function;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -40,13 +36,13 @@ public class TaskActivity extends BaseActivity {
 
     public static final String TASK_EXTRA = "task_extra";
 
-    private FirebaseRepository mRepository;
-
     private EditText mTextInput;
     private EditText mDateView;
     private EditText mTimeView;
     private TextView mQuoteView;
+
     private Task mTask;
+    private FirebaseRepository mRepository;
     private boolean isNewTask;
 
     @Override
@@ -67,12 +63,6 @@ public class TaskActivity extends BaseActivity {
             mTask = new Task();
         }
 
-        Function f = new Function() {
-            @Override
-            public Object apply(Object input) {
-                return null;
-            }
-        };
         initViews();
         setUpDateTimePickers();
     }

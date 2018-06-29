@@ -13,8 +13,8 @@ import android.util.Log;
 
 public class NotificationPublisher extends BroadcastReceiver {
     private static final String TAG = NotificationPublisher.class.getSimpleName();
-    public static String EXTRA_NOTIFICATION_ID = "notification_id";
-    public static String EXTRA_NOTIFICATION = "notification";
+    public static final String EXTRA_NOTIFICATION_ID = "notification_id";
+    public static final String EXTRA_NOTIFICATION = "notification";
 
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");

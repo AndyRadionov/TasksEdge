@@ -30,12 +30,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     interface OnTaskCardClickListener {
         void onCardClick(@NonNull Task task);
+
         void onCheckClick(@NonNull Task task);
     }
 
-    private List<Task> mTasks;
-    private OnTaskCardClickListener mCardClickListener;
-    private Comparator<Task> mComparator = initComparator();
+    private final List<Task> mTasks;
+    private final OnTaskCardClickListener mCardClickListener;
+    private final Comparator<Task> mComparator = initComparator();
 
     public TasksAdapter(OnTaskCardClickListener cardClickListener) {
         Log.d(TAG, "TasksAdapter: constructor call");
@@ -92,9 +93,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private CheckBox isTaskDoneView;
-        private TextView taskTextView;
-        private TextView taskDateView;
+        private final CheckBox isTaskDoneView;
+        private final TextView taskTextView;
+        private final TextView taskDateView;
 
         private TaskViewHolder(View itemView) {
             super(itemView);

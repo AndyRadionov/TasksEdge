@@ -18,8 +18,24 @@ import io.github.andyradionov.tasksedge.ui.TaskActivity;
 public class TasksWidget extends AppWidgetProvider {
     private static final String TAG = TasksWidget.class.getSimpleName();
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d(TAG, "onUpdate");
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+    }
+
+    private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
         Log.d(TAG, "updateAppWidget");
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.tasks_widget);
 
@@ -32,20 +48,6 @@ public class TasksWidget extends AppWidgetProvider {
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d(TAG, "onUpdate");
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-    @Override
-    public void onEnabled(Context context) {}
-
-    @Override
-    public void onDisabled(Context context) {}
 
     private static PendingIntent getAddTaskPendingIntent(Context context, Class activity) {
         Log.d(TAG, "getAddTaskPendingIntent");

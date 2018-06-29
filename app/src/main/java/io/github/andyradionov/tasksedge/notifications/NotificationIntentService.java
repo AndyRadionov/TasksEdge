@@ -20,6 +20,7 @@ public class NotificationIntentService extends IntentService implements Reposito
     private static final String TAG = NotificationIntentService.class.getSimpleName();
     public static final String ACTION_SCHEDULE_ALL = "schedule_all";
     public static final String ACTION_CANCEL_ALL = "cancel_all";
+
     private FirebaseRepository mRepository;
     private String mAction;
 
@@ -38,7 +39,7 @@ public class NotificationIntentService extends IntentService implements Reposito
         }
     }
 
-    public void executeTask() {
+    private void executeTask() {
         Log.d(TAG, "executeTask " + mAction);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) return;
@@ -65,8 +66,10 @@ public class NotificationIntentService extends IntentService implements Reposito
     }
 
     @Override
-    public void onTaskUpdated(Task task) {}
+    public void onTaskUpdated(Task task) {
+    }
 
     @Override
-    public void onTaskRemoved(Task task) {}
+    public void onTaskRemoved(Task task) {
+    }
 }

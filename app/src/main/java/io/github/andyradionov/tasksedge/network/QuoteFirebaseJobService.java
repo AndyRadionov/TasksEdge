@@ -12,7 +12,7 @@ import com.firebase.jobdispatcher.JobService;
 
 public class QuoteFirebaseJobService extends JobService {
     private static final String TAG = QuoteFirebaseJobService.class.getSimpleName();
-    AsyncTask<Void, Void, Void> mQuoteBackgroundTask;
+    private AsyncTask<Void, Void, Void> mQuoteBackgroundTask;
 
     @Override
     public boolean onStartJob(final JobParameters job) {

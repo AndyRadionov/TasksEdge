@@ -3,7 +3,6 @@ package io.github.andyradionov.tasksedge.ui;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.TextView;
 
 import io.github.andyradionov.tasksedge.R;
@@ -13,7 +12,6 @@ import io.github.andyradionov.tasksedge.R;
  */
 
 public abstract class BaseActivity extends AppCompatActivity {
-
 
     protected void setUpToolbar(String title) {
         setUpToolbar(title, R.drawable.ic_back_white, false);

@@ -18,7 +18,7 @@ public class FirebaseRepository {
     private static final String TAG = FirebaseRepository.class.getSimpleName();
     private static final FirebaseRepository INSTANCE = new FirebaseRepository();
 
-    private DatabaseReference mDatabaseReference;
+    private final DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
 
     private FirebaseRepository() {
@@ -49,13 +49,18 @@ public class FirebaseRepository {
                     Task task = dataSnapshot.getValue(Task.class);
                     dbCallbacks.onTaskUpdated(task);
                 }
+
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                     Log.d(TAG, "onChildRemoved");
                     Task task = dataSnapshot.getValue(Task.class);
                     dbCallbacks.onTaskRemoved(task);
                 }
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {}
-                public void onCancelled(@NonNull DatabaseError databaseError) {}
+
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
+                }
+
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
             };
             mDatabaseReference.orderByChild(sortOrder).addChildEventListener(mChildEventListener);
         }
