@@ -1,8 +1,6 @@
 package io.github.andyradionov.tasksedge.network;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.Constraint;
@@ -15,7 +13,6 @@ import com.firebase.jobdispatcher.Trigger;
 
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import io.github.andyradionov.tasksedge.R;

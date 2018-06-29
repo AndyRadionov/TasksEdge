@@ -1,7 +1,5 @@
 package io.github.andyradionov.tasksedge.database;
 
-import io.github.andyradionov.tasksedge.model.Task;
-
 /**
  * @author Andrey Radionov
  */

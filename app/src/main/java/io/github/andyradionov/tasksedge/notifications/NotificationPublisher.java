@@ -19,10 +19,10 @@ public class NotificationPublisher extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive");
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) return;
 
         Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION);
         int id = intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0);
         notificationManager.notify(id, notification);
-
     }
 }

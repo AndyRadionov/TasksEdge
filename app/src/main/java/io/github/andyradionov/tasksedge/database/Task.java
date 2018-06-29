@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.model;
+package io.github.andyradionov.tasksedge.database;
 
 import android.os.Parcel;
 import android.os.Parcelable;

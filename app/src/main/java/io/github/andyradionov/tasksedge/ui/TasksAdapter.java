@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.database.Task;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 
 /**

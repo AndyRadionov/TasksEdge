@@ -8,9 +8,9 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
+import io.github.andyradionov.tasksedge.database.Task;
 
 /**
  * @author Andrey Radionov
@@ -24,7 +24,7 @@ public class NotificationIntentService extends IntentService implements Reposito
     private String mAction;
 
     public NotificationIntentService() {
-        super(NotificationIntentService.class.getSimpleName());
+        super(TAG);
     }
 
     @Override

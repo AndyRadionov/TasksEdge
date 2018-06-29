@@ -19,7 +19,7 @@ import android.util.Log;
 import java.util.Date;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.database.Task;
 import io.github.andyradionov.tasksedge.ui.MainActivity;
 
 

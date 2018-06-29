@@ -28,7 +28,7 @@ import java.util.Arrays;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
-import io.github.andyradionov.tasksedge.model.Task;
+import io.github.andyradionov.tasksedge.database.Task;
 import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
