@@ -25,18 +25,14 @@
         </activity>
         <activity
             android:name=".ui.SettingsActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:parentActivityName=".ui.MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.TaskActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:parentActivityName=".ui.MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />

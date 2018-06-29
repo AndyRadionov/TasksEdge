@@ -5,19 +5,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +34,7 @@ import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
 import static android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         TasksAdapter.OnTaskCardClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         RepositoryCallbacks {
@@ -61,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements
         mFirebaseAuth = FirebaseAuth.getInstance();
         QuoteFetcherUtils.scheduleUpdate(this);
 
-        setUpToolbar();
+        setUpToolbar(getString(R.string.app_name));
         setUpFab();
         setUpRecycler();
-        setupAuthListener();
+        setUpAuthListener();
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
@@ -107,7 +103,8 @@ public class MainActivity extends AppCompatActivity implements
         if (item.getItemId() == R.id.action_settings) {
             Log.d(TAG, "onOptionsItemSelected: settings");
             Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
-            startActivity(startSettingsActivity);
+            startActivityAnimate(startSettingsActivity,
+                    R.anim.slide_in_right, R.anim.slide_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -139,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "onCardClick: " + task);
         Intent editTaskIntent = new Intent(this, TaskActivity.class);
         editTaskIntent.putExtra(TaskActivity.TASK_EXTRA, task);
-        startTaskActivityAnimate(editTaskIntent);
+        startActivityAnimate(editTaskIntent, R.anim.slide_in_up, R.anim.slide_out_up);
     }
 
     @Override
@@ -179,23 +176,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void startTaskActivityAnimate(Intent intent) {
-        Log.d(TAG, "startTaskActivityAnimate");
+    private void startActivityAnimate(Intent intent, int enterAnim, int exitAnim) {
+        Log.d(TAG, "startActivityAnimate");
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-    }
-
-    private void setUpToolbar() {
-        Log.d(TAG, "setUpToolbar");
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
-        toolbarTitle.setText(getString(R.string.app_name));
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
+        overridePendingTransition(enterAnim, exitAnim);
     }
 
     private void setUpFab() {
@@ -205,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
-                startTaskActivityAnimate(addNewTask);
+                startActivityAnimate(addNewTask, R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
     }
@@ -237,8 +221,8 @@ public class MainActivity extends AppCompatActivity implements
         touchHelper.attachToRecyclerView(mTasksRecycler);
     }
 
-    private void setupAuthListener() {
-        Log.d(TAG, "setupAuthListener");
+    private void setUpAuthListener() {
+        Log.d(TAG, "setUpAuthListener");
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {

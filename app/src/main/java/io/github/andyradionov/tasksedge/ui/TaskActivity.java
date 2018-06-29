@@ -2,6 +2,7 @@ package io.github.andyradionov.tasksedge.ui;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.arch.core.util.Function;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -34,7 +35,7 @@ import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
  * @author Andrey Radionov
  */
 
-public class TaskActivity extends AppCompatActivity {
+public class TaskActivity extends BaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final String TASK_EXTRA = "task_extra";
@@ -58,14 +59,20 @@ public class TaskActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(TASK_EXTRA)) {
-            setUpToolbar(getString(R.string.edit_task_title));
+            setUpToolbar(getString(R.string.edit_task_title), R.drawable.ic_close_white);
             mTask = intent.getParcelableExtra(TASK_EXTRA);
         } else {
             isNewTask = true;
-            setUpToolbar(getString(R.string.add_task_title));
+            setUpToolbar(getString(R.string.add_task_title), R.drawable.ic_close_white);
             mTask = new Task();
         }
 
+        Function f = new Function() {
+            @Override
+            public Object apply(Object input) {
+                return null;
+            }
+        };
         initViews();
         setUpDateTimePickers();
     }
@@ -115,20 +122,6 @@ public class TaskActivity extends AppCompatActivity {
         super.onResume();
         Log.d(TAG, "onResume");
         setQuote();
-    }
-
-    private void setUpToolbar(String title) {
-        Log.d(TAG, "setUpToolbar");
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView toolbarTitle = toolbar.findViewById(R.id.tv_toolbar_title);
-        toolbarTitle.setText(title);
-        toolbar.setNavigationIcon(R.drawable.ic_close_white);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
     }
 
     private void initViews() {
