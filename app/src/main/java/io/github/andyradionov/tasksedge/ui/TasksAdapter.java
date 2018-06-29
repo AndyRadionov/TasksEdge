@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.Task;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
@@ -93,16 +95,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final CheckBox isTaskDoneView;
-        private final TextView taskTextView;
-        private final TextView taskDateView;
+        @BindView(R.id.cb_is_done) CheckBox isTaskDoneView;
+        @BindView(R.id.tv_task_text) TextView taskTextView;
+        @BindView(R.id.tv_task_date) TextView taskDateView;
 
         private TaskViewHolder(View itemView) {
             super(itemView);
             Log.d(TAG, "TaskViewHolder: constructor call");
-            taskTextView = itemView.findViewById(R.id.tv_task_text);
-            taskDateView = itemView.findViewById(R.id.tv_task_date);
-            isTaskDoneView = itemView.findViewById(R.id.cb_is_done);
+            ButterKnife.bind(this, itemView);
             isTaskDoneView.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }

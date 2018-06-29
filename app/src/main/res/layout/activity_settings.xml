@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/settings_margin"
         android:background="@drawable/button_background"
-        android:onClick="signOut"
         android:text="@string/sign_out"
         android:textColor="@android:color/black"
         app:layout_constraintRight_toRightOf="parent"

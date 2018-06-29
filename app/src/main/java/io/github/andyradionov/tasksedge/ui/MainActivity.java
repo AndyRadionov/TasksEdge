@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
@@ -42,7 +44,7 @@ public class MainActivity extends BaseActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 324;
 
-    private RecyclerView mTasksRecycler;
+    @BindView(R.id.rv_tasks_container) RecyclerView mTasksRecycler;
     private TasksAdapter mTasksAdapter;
 
     private FirebaseAuth mFirebaseAuth;
@@ -60,7 +62,6 @@ public class MainActivity extends BaseActivity implements
         QuoteFetcherUtils.scheduleUpdate(this);
 
         setUpToolbar(getString(R.string.app_name));
-        setUpFab();
         setUpRecycler();
         setUpAuthListener();
 
@@ -184,21 +185,14 @@ public class MainActivity extends BaseActivity implements
         overridePendingTransition(enterAnim, exitAnim);
     }
 
-    private void setUpFab() {
-        Log.d(TAG, "setUpFab");
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
-                startActivityAnimate(addNewTask, R.anim.slide_in_up, R.anim.slide_out_up);
-            }
-        });
+    @OnClick(R.id.fab_add_task)
+    public void addTask() {
+        Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
+        startActivityAnimate(addNewTask, R.anim.slide_in_up, R.anim.slide_out_up);
     }
 
     private void setUpRecycler() {
         Log.d(TAG, "setUpRecycler");
-        mTasksRecycler = findViewById(R.id.rv_tasks_container);
 
         mTasksAdapter = new TasksAdapter(this);
         mTasksRecycler.setAdapter(mTasksAdapter);

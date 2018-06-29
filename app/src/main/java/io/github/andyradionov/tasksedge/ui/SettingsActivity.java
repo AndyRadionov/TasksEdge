@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 
+import butterknife.OnClick;
 import io.github.andyradionov.tasksedge.R;
 
 public class SettingsActivity extends BaseActivity {
@@ -34,7 +35,8 @@ public class SettingsActivity extends BaseActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
     }
 
-    public void signOut(View view) {
+    @OnClick(R.id.btn_sign_out)
+    public void signOut() {
         Log.d(TAG, "signOut");
         AuthUI.getInstance().signOut(this);
         finish();

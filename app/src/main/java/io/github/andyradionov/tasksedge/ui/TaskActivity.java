@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import butterknife.BindView;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.database.Task;
@@ -36,10 +37,10 @@ public class TaskActivity extends BaseActivity {
 
     public static final String TASK_EXTRA = "task_extra";
 
-    private EditText mTextInput;
-    private EditText mDateView;
-    private EditText mTimeView;
-    private TextView mQuoteView;
+    @BindView(R.id.et_input_text) EditText mTextInput;
+    @BindView(R.id.et_date) EditText mDateView;
+    @BindView(R.id.et_time) EditText mTimeView;
+    @BindView(R.id.tv_quote) TextView mQuoteView;
 
     private Task mTask;
     private FirebaseRepository mRepository;
@@ -116,10 +117,6 @@ public class TaskActivity extends BaseActivity {
 
     private void initViews() {
         Log.d(TAG, "initViews");
-        mTextInput = findViewById(R.id.et_input_text);
-        mDateView = findViewById(R.id.et_date);
-        mTimeView = findViewById(R.id.et_time);
-        mQuoteView = findViewById(R.id.tv_quote);
 
         mTextInput.setText(mTask.getText());
         mDateView.setText(DateUtils.formatDate(mTask.getDueDate()));
