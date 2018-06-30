@@ -16,7 +16,7 @@ public class DateUtils {
     private static final String TAG = DateUtils.class.getSimpleName();
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy", Locale.ROOT);
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.ROOT);
-    private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyyHH:mm",
+    private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyy, HH:mm",
             Locale.ROOT);
 
     private DateUtils() {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="quote_card_margin_side">16dp</dimen>
+    <dimen name="quote_card_margin_top">4dp</dimen>
+    <dimen name="quote_card_padding">8dp</dimen>
+</resources>

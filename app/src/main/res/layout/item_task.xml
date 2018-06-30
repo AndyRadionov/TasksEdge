@@ -31,6 +31,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:textSize="@dimen/date_task_text_size"
             android:id="@+id/tv_task_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
