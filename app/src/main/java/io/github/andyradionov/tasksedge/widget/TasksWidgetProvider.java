@@ -42,13 +42,11 @@ public class TasksWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
+        WidgetUpdateService.startActionUpdatePlantWidgets(context);
     }
 
-    public static void updateTasksPlantWidgets(Context context, AppWidgetManager appWidgetManager,
-                                               int[] appWidgetIds) {
+    public static void updateTasksWidgets(Context context, AppWidgetManager appWidgetManager,
+                                          int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }

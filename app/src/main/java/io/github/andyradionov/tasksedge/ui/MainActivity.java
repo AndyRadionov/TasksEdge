@@ -29,6 +29,7 @@ import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
+import io.github.andyradionov.tasksedge.widget.WidgetUpdateService;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
@@ -144,6 +145,7 @@ public class MainActivity extends BaseActivity implements
     public void onTaskAdded(Task task) {
         Log.d(TAG, "onTaskAdded: " + task);
         mTasksAdapter.addTask(task);
+        WidgetUpdateService.startActionUpdatePlantWidgets(this);
         if (PreferenceUtils.isNotificationsEnabled(this)) {
             NotificationManager.scheduleNotification(MainActivity.this, task);
         }
@@ -153,6 +155,7 @@ public class MainActivity extends BaseActivity implements
     public void onTaskUpdated(Task task) {
         Log.d(TAG, "onTaskUpdated: " + task);
         mTasksAdapter.sort();
+        WidgetUpdateService.startActionUpdatePlantWidgets(this);
         if (PreferenceUtils.isNotificationsEnabled(this)) {
             NotificationManager.updateNotification(MainActivity.this, task);
         }
@@ -162,6 +165,7 @@ public class MainActivity extends BaseActivity implements
     public void onTaskRemoved(Task task) {
         Log.d(TAG, "onTaskRemoved: " + task);
         mTasksAdapter.removeTask(task);
+        WidgetUpdateService.startActionUpdatePlantWidgets(this);
         if (PreferenceUtils.isNotificationsEnabled(this)) {
             NotificationManager.cancelNotification(MainActivity.this, task);
         }

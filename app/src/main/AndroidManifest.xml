@@ -47,6 +47,9 @@
         <service
             android:name=".widget.WidgetListService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".widget.WidgetUpdateService"
+            android:exported="false" />
 
         <receiver android:name=".widget.TasksWidgetProvider">
             <intent-filter>

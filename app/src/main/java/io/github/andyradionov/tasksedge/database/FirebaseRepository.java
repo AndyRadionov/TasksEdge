@@ -74,22 +74,21 @@ public class FirebaseRepository {
         final List<Task> tasks = new ArrayList<>();
         mDatabaseReference.orderByChild(sortOrder)
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    //Getting the data from snapshot
-                    Task task = postSnapshot.getValue(Task.class);
-                    tasks.add(task);
-                }
-                mDatabaseReference.removeEventListener(this);
-                dbCallbacks.onListFetched(tasks);
-                Log.d(TAG, "onDataChange: " + tasks.size());
-            }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                            Task task = postSnapshot.getValue(Task.class);
+                            tasks.add(task);
+                        }
+                        mDatabaseReference.removeEventListener(this);
+                        dbCallbacks.onListFetched(tasks);
+                        Log.d(TAG, "onDataChange: " + tasks.size());
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
     }
 
     public void detachDatabaseReadListener() {

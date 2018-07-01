@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,11 +25,9 @@ import butterknife.BindView;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.database.Task;
-import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
-import io.github.andyradionov.tasksedge.widget.WidgetListService;
 
 /**
  * @author Andrey Radionov
@@ -82,16 +82,7 @@ public class TaskActivity extends BaseActivity {
 
         if (item.getItemId() == R.id.action_done && checkInput()) {
             Log.d(TAG, "onOptionsItemSelected: Action Done");
-            parseTaskInput();
-            if (isNewTask) {
-                Log.d(TAG, "onOptionsItemSelected: Add New Task");
-                mRepository.addValue(mTask);
-                AnalyticsUtils.logNewTaskLengthEvent(this, mTask.getText().length());
-            } else {
-                Log.d(TAG, "onOptionsItemSelected: Edit Task");
-                mRepository.updateValue(mTask);
-            }
-            finish();
+            handleDoneAction();
             return true;
         } else if (item.getItemId() == android.R.id.home) {
             Log.d(TAG, "onOptionsItemSelected: Home");
@@ -114,12 +105,37 @@ public class TaskActivity extends BaseActivity {
         setQuote();
     }
 
+    private void handleDoneAction() {
+        parseTaskInput();
+        if (isNewTask) {
+            Log.d(TAG, "onOptionsItemSelected: Add New Task");
+            mRepository.addValue(mTask);
+            AnalyticsUtils.logNewTaskLengthEvent(this, mTask.getText().length());
+        } else {
+            Log.d(TAG, "onOptionsItemSelected: Edit Task");
+            mRepository.updateValue(mTask);
+        }
+        finish();
+    }
+
     private void initViews() {
         Log.d(TAG, "initViews");
 
         mTextInput.setText(mTask.getText());
         mDateView.setText(DateUtils.formatDate(mTask.getDueDate()));
         mTimeView.setText(DateUtils.formatTime(mTask.getDueDate()));
+
+        mTextInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    handleDoneAction();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     private void setQuote() {
@@ -191,7 +207,7 @@ public class TaskActivity extends BaseActivity {
 
     private void parseTaskInput() {
         Log.d(TAG, "parseTaskInput");
-        String text = mTextInput.getText().toString().trim();
+        String text = mTextInput.getText().toString().replaceAll("\\n+", " ").trim();
         String dateText = mDateView.getText().toString().trim();
         String timeText = mTimeView.getText().toString().trim();
 

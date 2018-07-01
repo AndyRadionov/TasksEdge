@@ -10,6 +10,8 @@
 
     <string name="pref_quote_key" translatable="false">quote_key</string>
     <string name="pref_quote_date_key" translatable="false">quote_date_key</string>
+    <string name="pref_widget_tasks_key" translatable="false">pref_widget_tasks_key</string>
+    <string name="pref_widget_tasks_default" translatable="false"/>
     <string name="pref_quote_default">Only those who dare to fail greatly can ever achieve greatly.</string>
     <string name="quote_label">Quote of the day:</string>
     <string name="notification_channel_name">TasksEdge Notifications</string>
