@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +23,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
+import io.github.andyradionov.tasksedge.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.database.Task;
 import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.notifications.NotificationManager;
@@ -39,7 +37,7 @@ import static android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 public class MainActivity extends BaseActivity implements
         TasksAdapter.OnTaskCardClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
-        RepositoryCallbacks {
+        RepoItemCallbacks {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 324;
@@ -245,7 +243,7 @@ public class MainActivity extends BaseActivity implements
     private void onSignedInInitialize() {
         Log.d(TAG, "onSignedInInitialize");
         mRepository = FirebaseRepository.getInstance();
-        mRepository.attachDatabaseListener(getString(R.string.order_key), this);
+        mRepository.attachChildListener(getString(R.string.order_key), this);
     }
 
     private void onSignedOutCleanup() {

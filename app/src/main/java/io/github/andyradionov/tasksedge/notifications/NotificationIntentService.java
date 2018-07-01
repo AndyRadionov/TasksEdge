@@ -9,14 +9,14 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.RepositoryCallbacks;
+import io.github.andyradionov.tasksedge.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.database.Task;
 
 /**
  * @author Andrey Radionov
  */
 
-public class NotificationIntentService extends IntentService implements RepositoryCallbacks {
+public class NotificationIntentService extends IntentService implements RepoItemCallbacks {
     private static final String TAG = NotificationIntentService.class.getSimpleName();
     public static final String ACTION_SCHEDULE_ALL = "schedule_all";
     public static final String ACTION_CANCEL_ALL = "cancel_all";
@@ -45,7 +45,7 @@ public class NotificationIntentService extends IntentService implements Reposito
         if (firebaseAuth.getCurrentUser() == null) return;
 
         mRepository = FirebaseRepository.getInstance();
-        mRepository.attachDatabaseListener(getString(R.string.order_key), this);
+        mRepository.attachChildListener(getString(R.string.order_key), this);
     }
 
     @Override

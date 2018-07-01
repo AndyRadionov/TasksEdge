@@ -4,7 +4,7 @@ package io.github.andyradionov.tasksedge.database;
  * @author Andrey Radionov
  */
 
-public interface RepositoryCallbacks {
+public interface RepoItemCallbacks {
 
     void onTaskAdded(Task task);
 

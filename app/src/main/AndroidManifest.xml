@@ -44,16 +44,11 @@
         <service
             android:name=".notifications.NotificationIntentService"
             android:exported="false" />
+        <service
+            android:name=".widget.WidgetListService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <receiver android:name=".notifications.NotificationPublisher" />
-        <receiver
-            android:name=".notifications.BootReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".widget.TasksWidget">
+        <receiver android:name=".widget.TasksWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -61,6 +56,14 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
+        </receiver>
+        <receiver android:name=".notifications.NotificationPublisher" />
+        <receiver
+            android:name=".notifications.BootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
     </application>
 

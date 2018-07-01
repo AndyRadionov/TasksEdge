@@ -27,6 +27,7 @@ import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
+import io.github.andyradionov.tasksedge.widget.WidgetListService;
 
 /**
  * @author Andrey Radionov
@@ -89,9 +90,7 @@ public class TaskActivity extends BaseActivity {
             } else {
                 Log.d(TAG, "onOptionsItemSelected: Edit Task");
                 mRepository.updateValue(mTask);
-                NotificationManager.cancelNotification(this, mTask);
             }
-            NotificationManager.scheduleNotification(this, mTask);
             finish();
             return true;
         } else if (item.getItemId() == android.R.id.home) {

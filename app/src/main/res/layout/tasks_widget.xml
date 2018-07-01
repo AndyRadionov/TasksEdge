@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    android:orientation="horizontal"
-    android:padding="@dimen/widget_padding">
+    android:background="@color/background">
+
+    <LinearLayout
+        android:id="@+id/widget_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal"
+        android:padding="@dimen/widget_padding">
+
+        <TextView
+            android:id="@+id/tv_widget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bevan"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/widget_text_size" />
+
+        <ImageButton
+            android:id="@+id/ibtn_add_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_add_black"
+            android:contentDescription="@string/add_new_task" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_widget_tasks_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/widget_top"
+        android:padding="4dp" />
 
     <TextView
-        android:id="@+id/tv_widget"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:fontFamily="@font/bevan"
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/widget_text_size" />
-
-    <ImageButton
-        android:id="@+id/ibtn_add_task"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_add_black"
-        android:contentDescription="@string/add_new_task" />
-</LinearLayout>
+        android:text="@string/no_tasks"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+</RelativeLayout>

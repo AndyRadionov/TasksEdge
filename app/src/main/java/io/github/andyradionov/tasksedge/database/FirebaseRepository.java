@@ -9,6 +9,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Andrey Radionov
@@ -33,9 +37,9 @@ public class FirebaseRepository {
         return INSTANCE;
     }
 
-    public void attachDatabaseListener(String sortOrder, final RepositoryCallbacks dbCallbacks) {
+    public void attachChildListener(String sortOrder, final RepoItemCallbacks dbCallbacks) {
         if (mChildEventListener == null) {
-            Log.d(TAG, "attachDatabaseListener");
+            Log.d(TAG, "attachChildListener");
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -64,6 +68,28 @@ public class FirebaseRepository {
             };
             mDatabaseReference.orderByChild(sortOrder).addChildEventListener(mChildEventListener);
         }
+    }
+
+    public void attachValueListener(String sortOrder, final RepoListCallbacks dbCallbacks) {
+        final List<Task> tasks = new ArrayList<>();
+        mDatabaseReference.orderByChild(sortOrder)
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    //Getting the data from snapshot
+                    Task task = postSnapshot.getValue(Task.class);
+                    tasks.add(task);
+                }
+                mDatabaseReference.removeEventListener(this);
+                dbCallbacks.onListFetched(tasks);
+                Log.d(TAG, "onDataChange: " + tasks.size());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     public void detachDatabaseReadListener() {

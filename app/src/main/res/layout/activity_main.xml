@@ -31,14 +31,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_tasks_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="@dimen/task_container_padding"
-            android:scrollbarStyle="outsideOverlay"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_tasks_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="@dimen/task_container_padding"
+        android:scrollbarStyle="outsideOverlay"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add_task"
