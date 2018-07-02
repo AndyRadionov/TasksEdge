@@ -45,7 +45,7 @@ public class NotificationIntentService extends IntentService implements RepoItem
         if (firebaseAuth.getCurrentUser() == null) return;
 
         mRepository = FirebaseRepository.getInstance();
-        mRepository.attachChildListener(getString(R.string.order_key), this);
+        mRepository.attachDbListener(getString(R.string.order_key), this);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class NotificationIntentService extends IntentService implements RepoItem
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-        mRepository.detachDatabaseReadListener();
+        mRepository.detachDbListener();
     }
 
     @Override

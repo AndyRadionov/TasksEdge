@@ -247,7 +247,7 @@ public class MainActivity extends BaseActivity implements
     private void onSignedInInitialize() {
         Log.d(TAG, "onSignedInInitialize");
         mRepository = FirebaseRepository.getInstance();
-        mRepository.attachChildListener(getString(R.string.order_key), this);
+        mRepository.attachDbListener(getString(R.string.order_key), this);
     }
 
     private void onSignedOutCleanup() {
@@ -257,9 +257,9 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void detachDatabaseListener() {
-        Log.d(TAG, "detachDatabaseListener");
+        Log.d(TAG, "detachDbListener");
         if (mRepository != null) {
-            mRepository.detachDatabaseReadListener();
+            mRepository.detachDbListener();
         }
     }
 }
