@@ -13,6 +13,7 @@
     <string name="pref_widget_tasks_key" translatable="false">pref_widget_tasks_key</string>
     <string name="pref_widget_tasks_default" translatable="false"/>
     <string name="pref_quote_default">Only those who dare to fail greatly can ever achieve greatly.</string>
+
     <string name="quote_label">Quote of the day:</string>
     <string name="notification_channel_name">TasksEdge Notifications</string>
     <string name="sign_out">Sign Out</string>
@@ -21,7 +22,7 @@
     <string name="due_date">Due Date</string>
     <string name="quote_key">quoteText</string>
     <string name="network_error">Error fetching quote</string>
-    <string name="notice_title">You have task!</string>
+    <string name="notice_title">You have a task!</string>
     <string name="order_key">dueDate/time</string>
     <string name="settings_title">Settings</string>
     <string name="edit_task_title">Edit Task</string>
@@ -30,7 +31,6 @@
     <string name="time_picker_title">Select Time</string>
     <string name="input_error">Text can\'t be empty!</string>
     <string name="add_new_task">Add new Task</string>
-    <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="input_day_hint">Enter task end day</string>
     <string name="time_input_hint">Enter task end time</string>

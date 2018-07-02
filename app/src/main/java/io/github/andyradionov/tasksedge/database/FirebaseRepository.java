@@ -37,9 +37,9 @@ public class FirebaseRepository {
         return INSTANCE;
     }
 
-    public void attachChildListener(String sortOrder, final RepoItemCallbacks dbCallbacks) {
+    public void attachDbListener(String sortOrder, final RepoItemCallbacks dbCallbacks) {
         if (mChildEventListener == null) {
-            Log.d(TAG, "attachChildListener");
+            Log.d(TAG, "attachDbListener");
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -70,12 +70,20 @@ public class FirebaseRepository {
         }
     }
 
-    public void attachValueListener(String sortOrder, final RepoListCallbacks dbCallbacks) {
-        final List<Task> tasks = new ArrayList<>();
+    public void detachDbListener() {
+        if (mChildEventListener != null) {
+            Log.d(TAG, "detachDbListener");
+            mDatabaseReference.removeEventListener(mChildEventListener);
+            mChildEventListener = null;
+        }
+    }
+
+    public void performListFetch(String sortOrder, final RepoListCallbacks dbCallbacks) {
         mDatabaseReference.orderByChild(sortOrder)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        final List<Task> tasks = new ArrayList<>();
                         for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                             Task task = postSnapshot.getValue(Task.class);
                             tasks.add(task);
@@ -89,14 +97,6 @@ public class FirebaseRepository {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-    }
-
-    public void detachDatabaseReadListener() {
-        if (mChildEventListener != null) {
-            Log.d(TAG, "detachDatabaseReadListener");
-            mDatabaseReference.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
-        }
     }
 
     public void addValue(Task task) {

@@ -53,7 +53,7 @@ public class WidgetUpdateService extends IntentService implements RepoListCallba
         if (firebaseAuth.getCurrentUser() == null) return;
 
         FirebaseRepository.getInstance()
-                .performSingleListener(getString(R.string.order_key), this);
+                .performListFetch(getString(R.string.order_key), this);
     }
 
     @Override
