@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -22,15 +23,15 @@ import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
  */
 
 public class WidgetUpdateService extends IntentService implements RepoListCallbacks {
+    private static final String TAG = WidgetUpdateService.class.getSimpleName();
     public static final String ACTION_UPDATE_WIDGET = "action_update";
-
-    private FirebaseRepository mRepository;
 
     public WidgetUpdateService() {
         super(WidgetUpdateService.class.getSimpleName());
     }
 
     public static void startActionUpdatePlantWidgets(Context context) {
+        Log.d(TAG, "startActionUpdatePlantWidgets: ");
         Intent intent = new Intent(context, WidgetUpdateService.class);
         intent.setAction(ACTION_UPDATE_WIDGET);
         context.startService(intent);
@@ -47,17 +48,17 @@ public class WidgetUpdateService extends IntentService implements RepoListCallba
     }
 
     private void handleUpdateWidget() {
-
+        Log.d(TAG, "handleUpdateWidget");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) return;
 
-        mRepository = FirebaseRepository.getInstance();
-        mRepository.attachValueListener(getString(R.string.order_key), this);
+        FirebaseRepository.getInstance()
+                .performSingleListener(getString(R.string.order_key), this);
     }
 
     @Override
     public void onListFetched(List<Task> tasks) {
-
+        Log.d(TAG, "onListFetched" + tasks.size());
         PreferenceUtils.saveWidgetTasks(this, tasks);
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);

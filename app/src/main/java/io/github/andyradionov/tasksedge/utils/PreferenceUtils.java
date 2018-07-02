@@ -6,6 +6,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -54,12 +55,13 @@ public class PreferenceUtils {
     }
 
     public static synchronized void saveWidgetTasks(Context context, List<Task> tasks) {
+        Log.d(TAG, "saveWidgetTasks");
         String widgetTasksKey = context.getString(R.string.pref_widget_tasks_key);
 
         StringBuilder sb = new StringBuilder();
         int maxSize = context.getResources().getInteger(R.integer.widget_list_size);
-        int size = tasks.size() > maxSize ? maxSize : tasks.size();
-        for (int i = size - 1; i >= 0; i--) {
+        int limit = tasks.size() > maxSize ? tasks.size() - maxSize : 0;
+        for (int i = tasks.size() - 1; i >= limit; i--) {
             sb.append(tasks.get(i).getText()).append("\n");
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -69,11 +71,15 @@ public class PreferenceUtils {
     }
 
     public static synchronized List<String> getWidgetTasks(Context context) {
+        Log.d(TAG, "getWidgetTasks");
         String widgetTasksKey = context.getString(R.string.pref_widget_tasks_key);
-        String widgetTasksKeyDefault = context.getString(R.string.pref_widget_tasks_key);
+        String widgetTasksDefault = context.getString(R.string.pref_widget_tasks_default);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String[] tasksArr = preferences.getString(widgetTasksKey, widgetTasksKeyDefault).split("\n");
-        return Arrays.asList(tasksArr);
+        String tasksString = preferences.getString(widgetTasksKey, widgetTasksDefault);
+        if (tasksString.equals(widgetTasksDefault)) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(tasksString.split("\n"));
     }
 }
