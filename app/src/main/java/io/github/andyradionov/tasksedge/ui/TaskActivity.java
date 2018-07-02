@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -159,14 +160,15 @@ public class TaskActivity extends BaseActivity {
             }
 
         };
-
         mDateView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(TaskActivity.this, date, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-                        .show();
+                DatePickerDialog dialog =
+                        new DatePickerDialog(TaskActivity.this, date, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMinDate(new Date().getTime());
+                dialog.show();
             }
         });
 
@@ -177,22 +179,29 @@ public class TaskActivity extends BaseActivity {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
-                TimePickerDialog mTimePicker = new TimePickerDialog(TaskActivity.this,
+                TimePickerDialog timePicker = new TimePickerDialog(TaskActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour,
                                           int selectedMinute) {
+                        if (!checkTimeInput(selectedHour, selectedMinute)) {
+                            showDateError();
+                            return;
+                        }
                         mTimeView.setText(String.format(Locale.ROOT, getString(R.string.time_format),
                                 selectedHour, selectedMinute));
                     }
                 }, hour, minute, true);
-
-                mTimePicker.setTitle(getString(R.string.time_picker_title));
-                mTimePicker.show();
+                timePicker.setTitle(getString(R.string.time_picker_title));
+                timePicker.show();
 
             }
         });
+    }
+
+    private void showDateError() {
+        Toast.makeText(TaskActivity.this, R.string.error_date_input, Toast.LENGTH_SHORT).show();
     }
 
     private boolean checkInput() {
@@ -201,6 +210,9 @@ public class TaskActivity extends BaseActivity {
         if (TextUtils.isEmpty(text)) {
             mTextInput.setError(getString(R.string.input_error));
             return false;
+        } else if (parseDateInput() == null) {
+            showDateError();
+            return false;
         }
         return true;
     }
@@ -208,14 +220,30 @@ public class TaskActivity extends BaseActivity {
     private void parseTaskInput() {
         Log.d(TAG, "parseTaskInput");
         String text = mTextInput.getText().toString().replaceAll("\\n+", " ").trim();
-        String dateText = mDateView.getText().toString().trim();
-        String timeText = mTimeView.getText().toString().trim();
 
         mTask.setText(text);
 
-        Date date = DateUtils.parseDateTime(dateText + ", " + timeText);
+        Date date = parseDateInput();
         if (date != null) {
             mTask.setDueDate(date);
         }
+    }
+
+    private boolean checkTimeInput(int hour, int minute) {
+        Log.d(TAG, "checkTimeInput");
+        String dateText = mDateView.getText().toString().trim();
+        Date date = DateUtils.parseDateTime(dateText + ", " + hour + ":" + minute);
+        return date != null && date.after(new Date());
+    }
+
+    private Date parseDateInput() {
+        Log.d(TAG, "parseDateInput");
+        String dateText = mDateView.getText().toString().trim();
+        String timeText = mTimeView.getText().toString().trim();
+        Date date = DateUtils.parseDateTime(dateText + ", " + timeText);
+        if (date != null && date.after(new Date())) {
+            return date;
+        }
+        return null;
     }
 }

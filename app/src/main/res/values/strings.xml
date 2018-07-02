@@ -35,4 +35,5 @@
     <string name="input_day_hint">Enter task end day</string>
     <string name="time_input_hint">Enter task end time</string>
     <string name="no_tasks">No Tasks</string>
+    <string name="error_date_input">Wrong Date!</string>
 </resources>
