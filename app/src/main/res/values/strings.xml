@@ -36,4 +36,5 @@
     <string name="time_input_hint">Enter task end time</string>
     <string name="no_tasks">No Tasks</string>
     <string name="error_date_input">Wrong Date!</string>
+    <string name="add_new_task_btn">Add new task</string>
 </resources>
