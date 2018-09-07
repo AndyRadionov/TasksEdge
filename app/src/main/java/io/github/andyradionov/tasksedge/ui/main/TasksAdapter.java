@@ -2,24 +2,20 @@ package io.github.andyradionov.tasksedge.ui.main;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.data.database.Task;
+import io.github.andyradionov.tasksedge.databinding.ItemTaskBinding;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 
 /**
@@ -50,10 +46,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder");
-        final CardView taskCard = (CardView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_task, parent, false);
+        LayoutInflater layoutInflater =
+                LayoutInflater.from(parent.getContext());
+        ItemTaskBinding itemBinding =
+                ItemTaskBinding.inflate(layoutInflater, parent, false);
 
-        return new TaskViewHolder(taskCard);
+        return new TaskViewHolder(itemBinding);
     }
 
     @Override
@@ -95,23 +93,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.cb_is_done) CheckBox isTaskDoneView;
-        @BindView(R.id.tv_task_text) TextView taskTextView;
-        @BindView(R.id.tv_task_date) TextView taskDateView;
-
-        private TaskViewHolder(View itemView) {
-            super(itemView);
+        private ItemTaskBinding binding;
+        private TaskViewHolder(ItemTaskBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             Log.d(TAG, "TaskViewHolder: constructor call");
-            ButterKnife.bind(this, itemView);
-            isTaskDoneView.setOnClickListener(this);
+
+            binding.cbIsDone.setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
         private void bind(Task task) {
             Log.d(TAG, "bind: " + task);
             itemView.setTag(task.getKey());
-            taskTextView.setText(task.getText());
-            taskDateView.setText(DateUtils.formatDateTime(task.getDueDate()));
+            binding.tvTaskText.setText(task.getText());
+            binding.tvTaskDate.setText(DateUtils.formatDateTime(task.getDueDate()));
             setCardChecked(false);
         }
 
@@ -134,12 +130,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
         private void setCardChecked(boolean isChecked) {
             Log.d(TAG, "setCardChecked: " + isChecked);
-            int flag = isChecked ? taskTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
-                    : taskTextView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG;
+            int flag = isChecked ? binding.tvTaskText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+                    : binding.tvTaskText.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG;
 
-            isTaskDoneView.setChecked(isChecked);
-            taskTextView.setPaintFlags(flag);
-            taskDateView.setPaintFlags(flag);
+            binding.cbIsDone.setChecked(isChecked);
+            binding.tvTaskText.setPaintFlags(flag);
+            binding.tvTaskDate.setPaintFlags(flag);
         }
     }
 

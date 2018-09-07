@@ -2,6 +2,7 @@ package io.github.andyradionov.tasksedge.ui.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.preference.PreferenceManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,13 +21,12 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import io.github.andyradionov.tasksedge.R;
 import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.data.database.Task;
 import io.github.andyradionov.tasksedge.data.network.QuoteFetcherUtils;
+import io.github.andyradionov.tasksedge.databinding.ActivityMainBinding;
 import io.github.andyradionov.tasksedge.notifications.NotificationManager;
 import io.github.andyradionov.tasksedge.ui.settings.SettingsActivity;
 import io.github.andyradionov.tasksedge.ui.task.TaskActivity;
@@ -46,25 +47,24 @@ public class MainActivity extends BaseActivity implements
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 324;
 
-    @BindView(R.id.rv_tasks_container) RecyclerView mTasksRecycler;
     private TasksAdapter mTasksAdapter;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseRepository mRepository;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         AnalyticsUtils.logAppOpenEvent(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
         QuoteFetcherUtils.scheduleUpdate(this);
 
-        setUpToolbar(getString(R.string.app_name));
-        setUpRecycler();
+        initViews();
         setUpAuthListener();
 
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -190,21 +190,28 @@ public class MainActivity extends BaseActivity implements
         overridePendingTransition(enterAnim, exitAnim);
     }
 
-    @OnClick(R.id.fab_add_task)
-    public void addTask() {
-        Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
-        startActivityAnimate(addNewTask, R.anim.slide_in_up, R.anim.slide_out_up);
+    private void initViews() {
+        bindToolbar(mBinding.toolbar, mBinding.tvToolbarTitle);
+        setUpToolbar(getString(R.string.app_name));
+        setUpRecycler();
+        mBinding.fabAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addNewTask = new Intent(MainActivity.this, TaskActivity.class);
+                startActivityAnimate(addNewTask, R.anim.slide_in_up, R.anim.slide_out_up);
+            }
+        });
     }
 
     private void setUpRecycler() {
         Log.d(TAG, "setUpRecycler");
 
         mTasksAdapter = new TasksAdapter(this);
-        mTasksRecycler.setAdapter(mTasksAdapter);
+        mBinding.rvTasksContainer.setAdapter(mTasksAdapter);
 
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mTasksRecycler.setLayoutManager(layoutManager);
+        mBinding.rvTasksContainer.setLayoutManager(layoutManager);
 
         ItemTouchHelper touchHelper = new ItemTouchHelper(new SimpleCallback(0, LEFT | RIGHT) {
             @Override
@@ -219,7 +226,7 @@ public class MainActivity extends BaseActivity implements
                 mRepository.removeValue(key);
             }
         });
-        touchHelper.attachToRecyclerView(mTasksRecycler);
+        touchHelper.attachToRecyclerView(mBinding.rvTasksContainer);
     }
 
     private void setUpAuthListener() {
