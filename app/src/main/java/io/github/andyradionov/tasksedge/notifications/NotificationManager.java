@@ -19,8 +19,8 @@ import android.util.Log;
 import java.util.Date;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.Task;
-import io.github.andyradionov.tasksedge.ui.MainActivity;
+import io.github.andyradionov.tasksedge.data.database.Task;
+import io.github.andyradionov.tasksedge.ui.main.MainActivity;
 
 
 public class NotificationManager {

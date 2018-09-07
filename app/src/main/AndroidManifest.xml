@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,22 +24,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.MainActivity">
+            android:name=".ui.settings.SettingsActivity"
+            android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />
+                android:value="io.github.andyradionov.tasksedge.ui.main.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.TaskActivity"
-            android:parentActivityName=".ui.MainActivity">
+            android:name=".ui.task.TaskActivity"
+            android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.andyradionov.tasksedge.ui.MainActivity" />
+                android:value="io.github.andyradionov.tasksedge.ui.main.MainActivity" />
         </activity>
 
         <service
-            android:name=".network.QuoteFirebaseJobService"
+            android:name=".data.network.QuoteFirebaseJobService"
             android:exported="false" />
         <service
             android:name=".notifications.NotificationIntentService"

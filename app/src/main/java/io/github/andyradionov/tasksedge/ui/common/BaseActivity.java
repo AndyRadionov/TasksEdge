@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.common;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;

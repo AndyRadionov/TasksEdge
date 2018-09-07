@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="io.github.andyradionov.tasksedge.ui.SettingsActivity">
+    tools:context="io.github.andyradionov.tasksedge.ui.settings.SettingsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -65,7 +65,7 @@
 
     <fragment
         android:id="@+id/fr_settings"
-        android:name="io.github.andyradionov.tasksedge.ui.SettingsFragment"
+        android:name="io.github.andyradionov.tasksedge.ui.settings.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

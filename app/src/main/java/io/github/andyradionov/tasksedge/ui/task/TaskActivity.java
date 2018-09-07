@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.task;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -24,8 +24,10 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
+import io.github.andyradionov.tasksedge.data.database.Task;
+import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
+import io.github.andyradionov.tasksedge.ui.main.MainActivity;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;

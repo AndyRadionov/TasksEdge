@@ -1,14 +1,14 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.settings;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
 
 import butterknife.OnClick;
 import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
 
 public class SettingsActivity extends BaseActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();

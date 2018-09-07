@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.network;
+package io.github.andyradionov.tasksedge.data.network;
 
 import android.content.Context;
 import android.util.Log;

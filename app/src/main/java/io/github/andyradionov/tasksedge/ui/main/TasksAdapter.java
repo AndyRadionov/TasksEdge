@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.main;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
@@ -19,7 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.data.database.Task;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 
 /**

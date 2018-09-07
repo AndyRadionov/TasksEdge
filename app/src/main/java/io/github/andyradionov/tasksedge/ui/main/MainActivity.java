@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,11 +22,14 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.RepoItemCallbacks;
-import io.github.andyradionov.tasksedge.database.Task;
-import io.github.andyradionov.tasksedge.network.QuoteFetcherUtils;
+import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
+import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
+import io.github.andyradionov.tasksedge.data.database.Task;
+import io.github.andyradionov.tasksedge.data.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.notifications.NotificationManager;
+import io.github.andyradionov.tasksedge.ui.settings.SettingsActivity;
+import io.github.andyradionov.tasksedge.ui.task.TaskActivity;
+import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
 import io.github.andyradionov.tasksedge.widget.WidgetUpdateService;
