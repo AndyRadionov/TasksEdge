@@ -1,4 +1,4 @@
-package io.github.andyradionov.tasksedge.database;
+package io.github.andyradionov.tasksedge.data.database;
 
 import java.util.List;
 

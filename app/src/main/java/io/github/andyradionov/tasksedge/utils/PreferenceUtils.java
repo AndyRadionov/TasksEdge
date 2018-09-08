@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.data.database.Task;
 
 /**
  * @author Andrey Radionov

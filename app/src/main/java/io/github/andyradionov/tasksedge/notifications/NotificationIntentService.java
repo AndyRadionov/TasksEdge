@@ -8,9 +8,9 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.RepoItemCallbacks;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
+import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
+import io.github.andyradionov.tasksedge.data.database.Task;
 
 /**
  * @author Andrey Radionov

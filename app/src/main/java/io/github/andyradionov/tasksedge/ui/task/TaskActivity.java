@@ -1,8 +1,10 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.task;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -22,10 +23,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import butterknife.BindView;
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.data.database.Task;
+import io.github.andyradionov.tasksedge.databinding.ActivityTaskBinding;
+import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
+import io.github.andyradionov.tasksedge.ui.main.MainActivity;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
@@ -39,22 +41,16 @@ public class TaskActivity extends BaseActivity {
 
     public static final String TASK_EXTRA = "task_extra";
 
-    @BindView(R.id.et_input_text) EditText mTextInput;
-    @BindView(R.id.et_date) EditText mDateView;
-    @BindView(R.id.et_time) EditText mTimeView;
-    @BindView(R.id.tv_quote) TextView mQuoteView;
-
     private Task mTask;
-    private FirebaseRepository mRepository;
     private boolean isNewTask;
+    private ActivityTaskBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        setContentView(R.layout.activity_task);
-
-        mRepository = FirebaseRepository.getInstance();
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_task);
+        bindToolbar(mBinding.toolbar, mBinding.tvToolbarTitle);
 
         Intent intent = getIntent();
         if (intent.hasExtra(TASK_EXTRA)) {
@@ -65,9 +61,7 @@ public class TaskActivity extends BaseActivity {
             setUpToolbar(getString(R.string.add_task_title), R.drawable.ic_close_white);
             mTask = new Task();
         }
-
         initViews();
-        setUpDateTimePickers();
     }
 
     @Override
@@ -108,25 +102,25 @@ public class TaskActivity extends BaseActivity {
 
     private void handleDoneAction() {
         parseTaskInput();
+        TaskViewModel viewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         if (isNewTask) {
             Log.d(TAG, "onOptionsItemSelected: Add New Task");
-            mRepository.addValue(mTask);
+            viewModel.addTask(mTask);
             AnalyticsUtils.logNewTaskLengthEvent(this, mTask.getText().length());
         } else {
             Log.d(TAG, "onOptionsItemSelected: Edit Task");
-            mRepository.updateValue(mTask);
+            viewModel.updateTask(mTask);
         }
         finish();
     }
 
     private void initViews() {
         Log.d(TAG, "initViews");
+        mBinding.etInputText.setText(mTask.getText());
+        mBinding.etDate.setText(DateUtils.formatDate(mTask.getDueDate()));
+        mBinding.etTime.setText(DateUtils.formatTime(mTask.getDueDate()));
 
-        mTextInput.setText(mTask.getText());
-        mDateView.setText(DateUtils.formatDate(mTask.getDueDate()));
-        mTimeView.setText(DateUtils.formatTime(mTask.getDueDate()));
-
-        mTextInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mBinding.etInputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -137,12 +131,13 @@ public class TaskActivity extends BaseActivity {
                 }
             }
         });
+        setUpDateTimePickers();
     }
 
     private void setQuote() {
         Log.d(TAG, "setQuote");
         String quote = PreferenceUtils.getQuote(this);
-        mQuoteView.setText(quote);
+        mBinding.tvQuote.setText(quote);
     }
 
     private void setUpDateTimePickers() {
@@ -156,11 +151,11 @@ public class TaskActivity extends BaseActivity {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                mDateView.setText(DateUtils.formatDate(calendar.getTime()));
+                mBinding.etDate.setText(DateUtils.formatDate(calendar.getTime()));
             }
 
         };
-        mDateView.setOnClickListener(new View.OnClickListener() {
+        mBinding.etDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -172,7 +167,7 @@ public class TaskActivity extends BaseActivity {
             }
         });
 
-        mTimeView.setOnClickListener(new View.OnClickListener() {
+        mBinding.etTime.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -189,7 +184,7 @@ public class TaskActivity extends BaseActivity {
                             showDateError();
                             return;
                         }
-                        mTimeView.setText(String.format(Locale.ROOT, getString(R.string.time_format),
+                        mBinding.etTime.setText(String.format(Locale.ROOT, getString(R.string.time_format),
                                 selectedHour, selectedMinute));
                     }
                 }, hour, minute, true);
@@ -206,9 +201,9 @@ public class TaskActivity extends BaseActivity {
 
     private boolean checkInput() {
         Log.d(TAG, "checkInput");
-        String text = mTextInput.getText().toString().trim();
+        String text = mBinding.etTime.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
-            mTextInput.setError(getString(R.string.input_error));
+            mBinding.etInputText.setError(getString(R.string.input_error));
             return false;
         } else if (parseDateInput() == null) {
             showDateError();
@@ -219,7 +214,7 @@ public class TaskActivity extends BaseActivity {
 
     private void parseTaskInput() {
         Log.d(TAG, "parseTaskInput");
-        String text = mTextInput.getText().toString().replaceAll("\\n+", " ").trim();
+        String text = mBinding.etInputText.getText().toString().replaceAll("\\n+", " ").trim();
 
         mTask.setText(text);
 
@@ -231,15 +226,15 @@ public class TaskActivity extends BaseActivity {
 
     private boolean checkTimeInput(int hour, int minute) {
         Log.d(TAG, "checkTimeInput");
-        String dateText = mDateView.getText().toString().trim();
+        String dateText = mBinding.etDate.getText().toString().trim();
         Date date = DateUtils.parseDateTime(dateText + ", " + hour + ":" + minute);
         return date != null && date.after(new Date());
     }
 
     private Date parseDateInput() {
         Log.d(TAG, "parseDateInput");
-        String dateText = mDateView.getText().toString().trim();
-        String timeText = mTimeView.getText().toString().trim();
+        String dateText = mBinding.etDate.getText().toString().trim();
+        String timeText = mBinding.etTime.getText().toString().trim();
         Date date = DateUtils.parseDateTime(dateText + ", " + timeText);
         if (date != null && date.after(new Date())) {
             return date;

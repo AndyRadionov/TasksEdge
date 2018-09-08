@@ -13,9 +13,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.database.RepoListCallbacks;
-import io.github.andyradionov.tasksedge.database.Task;
+import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
+import io.github.andyradionov.tasksedge.data.database.RepoListCallbacks;
+import io.github.andyradionov.tasksedge.data.database.Task;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
 
 /**

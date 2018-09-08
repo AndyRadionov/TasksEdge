@@ -9,8 +9,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.ui.MainActivity;
-import io.github.andyradionov.tasksedge.ui.TaskActivity;
+import io.github.andyradionov.tasksedge.ui.main.MainActivity;
+import io.github.andyradionov.tasksedge.ui.task.TaskActivity;
 
 /**
  * Implementation of App Widget functionality.

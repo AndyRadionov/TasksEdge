@@ -1,12 +1,10 @@
-package io.github.andyradionov.tasksedge.ui;
+package io.github.andyradionov.tasksedge.ui.common;
 
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.github.andyradionov.tasksedge.R;
 
 /**
@@ -15,13 +13,12 @@ import io.github.andyradionov.tasksedge.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.tv_toolbar_title) TextView mToolbarTitle;
+    private Toolbar mToolbar;
+    private TextView mToolbarTitle;
 
-    @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-        ButterKnife.bind(this);
+    protected void bindToolbar(Toolbar toolbar, TextView toolbarTitle) {
+        mToolbar = toolbar;
+        mToolbarTitle = toolbarTitle;
     }
 
     protected void setUpToolbar(String title) {
