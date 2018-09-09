@@ -2,10 +2,18 @@ package io.github.andyradionov.tasksedge.ui.main;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.data.database.Task;
+import io.github.andyradionov.tasksedge.notifications.NotificationManager;
+import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
+import io.github.andyradionov.tasksedge.widget.WidgetUpdateService;
 
 /**
  * @author Andrey Radionov
@@ -13,15 +21,32 @@ import io.github.andyradionov.tasksedge.data.database.Task;
 public class MainViewModel extends ViewModel implements RepoItemCallbacks {
 
     private FirebaseRepository mRepository;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private Context mAppContext;
     private MutableLiveData<Task> mAddTaskLiveData;
     private MutableLiveData<Task> mRemoveTaskLiveData;
     private MutableLiveData<Task> mUpdateTaskLiveData;
+    private MutableLiveData<Boolean> mAuthLiveData;
 
-    public MainViewModel(FirebaseRepository repository) {
+    public MainViewModel(FirebaseRepository repository, Context context) {
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
         mRepository = repository;
+        mAppContext = context;
         mAddTaskLiveData = new MutableLiveData<>();
         mRemoveTaskLiveData = new MutableLiveData<>();
         mUpdateTaskLiveData = new MutableLiveData<>();
+        mAuthLiveData = new MutableLiveData<>();
+        initAuthListener();
+    }
+
+    public void addAuthListener() {
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    public void removeAuthListener() {
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 
     public MutableLiveData<Task> getAddTaskLiveData() {
@@ -34,6 +59,10 @@ public class MainViewModel extends ViewModel implements RepoItemCallbacks {
 
     public MutableLiveData<Task> getUpdateTaskLiveData() {
         return mUpdateTaskLiveData;
+    }
+
+    public MutableLiveData<Boolean> getAuthLiveData() {
+        return mAuthLiveData;
     }
 
     public void removeTask(String key) {
@@ -50,18 +79,53 @@ public class MainViewModel extends ViewModel implements RepoItemCallbacks {
         }
     }
 
+    public void updateNotifications(boolean isEnabled) {
+        NotificationManager.setNotificationsEnabled(mAppContext, isEnabled);
+        if (isEnabled) {
+            NotificationManager.scheduleAllNotifications(mAppContext);
+        } else {
+            NotificationManager.cancelAllNotifications(mAppContext);
+        }
+    }
+
     @Override
     public void onTaskAdded(Task task) {
         mAddTaskLiveData.setValue(task);
+        WidgetUpdateService.startActionUpdatePlantWidgets(mAppContext);
+        if (PreferenceUtils.isNotificationsEnabled(mAppContext)) {
+            NotificationManager.scheduleNotification(mAppContext, task);
+        }
     }
 
     @Override
     public void onTaskUpdated(Task task) {
         mUpdateTaskLiveData.setValue(task);
+        WidgetUpdateService.startActionUpdatePlantWidgets(mAppContext);
+        if (PreferenceUtils.isNotificationsEnabled(mAppContext)) {
+            NotificationManager.updateNotification(mAppContext, task);
+        }
     }
 
     @Override
     public void onTaskRemoved(Task task) {
         mRemoveTaskLiveData.setValue(task);
+        WidgetUpdateService.startActionUpdatePlantWidgets(mAppContext);
+        if (PreferenceUtils.isNotificationsEnabled(mAppContext)) {
+            NotificationManager.cancelNotification(mAppContext, task);
+        }
+    }
+
+    private void initAuthListener() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    mAuthLiveData.setValue(true);
+                } else {
+                    mAuthLiveData.setValue(false);
+                }
+            }
+        };
     }
 }

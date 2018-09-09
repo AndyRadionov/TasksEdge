@@ -2,7 +2,10 @@ package io.github.andyradionov.tasksedge.ui.common;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.content.Context;
 import android.support.annotation.NonNull;
+
+import javax.inject.Inject;
 
 import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.ui.main.MainViewModel;
@@ -15,10 +18,12 @@ import io.github.andyradionov.tasksedge.ui.task.TaskViewModel;
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final FirebaseRepository mRepository;
+    private final Context mContext;
 
     @Inject
-    public ViewModelFactory(FirebaseRepository repository) {
+    public ViewModelFactory(FirebaseRepository repository, Context context) {
         mRepository = repository;
+        mContext = context;
     }
 
     @NonNull
@@ -28,7 +33,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new TaskViewModel(mRepository);
         }
         else if (modelClass.isAssignableFrom(MainViewModel.class)) {
-            return (T) new MainViewModel(mRepository);
+            return (T) new MainViewModel(mRepository, mContext);
         }
         else {
             throw new IllegalArgumentException("ViewModel type was not found");

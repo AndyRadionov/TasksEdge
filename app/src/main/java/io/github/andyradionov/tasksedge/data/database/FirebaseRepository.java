@@ -20,21 +20,16 @@ import java.util.List;
 
 public class FirebaseRepository {
     private static final String TAG = FirebaseRepository.class.getSimpleName();
-    private static final FirebaseRepository INSTANCE = new FirebaseRepository();
 
     private final DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
 
-    private FirebaseRepository() {
+    public FirebaseRepository() {
         Log.d(TAG, "FirebaseRepository constructor call");
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = firebaseDatabase.getReference().child(firebaseAuth
                 .getCurrentUser().getUid());
-    }
-
-    public static FirebaseRepository getInstance() {
-        return INSTANCE;
     }
 
     public void attachDbListener(String sortOrder, final RepoItemCallbacks dbCallbacks) {

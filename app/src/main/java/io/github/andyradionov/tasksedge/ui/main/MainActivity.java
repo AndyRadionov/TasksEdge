@@ -52,8 +52,6 @@ public class MainActivity extends BaseActivity implements
 
     private TasksAdapter mTasksAdapter;
 
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private ActivityMainBinding mBinding;
     private MainViewModel mViewModel;
 
@@ -62,34 +60,17 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(MainViewModel.class);
 
         AnalyticsUtils.logAppOpenEvent(this);
-        mFirebaseAuth = FirebaseAuth.getInstance();
         QuoteFetcherUtils.scheduleUpdate(this);
 
         initViews();
-        setUpAuthListener();
         setLiveData();
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause");
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        detachDatabaseListener();
-        mTasksAdapter.clear();
+        mViewModel.addAuthListener();
     }
 
     @Override
@@ -98,6 +79,9 @@ public class MainActivity extends BaseActivity implements
         Log.d(TAG, "onDestroy");
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
+        detachDatabaseListener();
+        mTasksAdapter.clear();
+        mViewModel.removeAuthListener();
     }
 
     @Override
@@ -126,12 +110,7 @@ public class MainActivity extends BaseActivity implements
             Log.d(TAG, "onSharedPreferenceChanged: notifications");
             boolean notificationsEnabled = sharedPreferences.getBoolean(key,
                     getResources().getBoolean(R.bool.pref_enable_notices_default));
-            NotificationManager.setNotificationsEnabled(this, notificationsEnabled);
-            if (notificationsEnabled) {
-                NotificationManager.scheduleAllNotifications(this);
-            } else {
-                NotificationManager.cancelAllNotifications(this);
-            }
+            mViewModel.updateNotifications(notificationsEnabled);
         }
     }
 
@@ -210,10 +189,6 @@ public class MainActivity extends BaseActivity implements
             public void onChanged(@Nullable Task task) {
                 Log.d(TAG, "onTaskAdded: " + task);
                 mTasksAdapter.addTask(task);
-                WidgetUpdateService.startActionUpdatePlantWidgets(MainActivity.this);
-                if (PreferenceUtils.isNotificationsEnabled(MainActivity.this)) {
-                    NotificationManager.scheduleNotification(MainActivity.this, task);
-                }
             }
         });
 
@@ -223,10 +198,6 @@ public class MainActivity extends BaseActivity implements
             public void onChanged(@Nullable Task task) {
                 Log.d(TAG, "onTaskRemoved: " + task);
                 mTasksAdapter.removeTask(task);
-                WidgetUpdateService.startActionUpdatePlantWidgets(MainActivity.this);
-                if (PreferenceUtils.isNotificationsEnabled(MainActivity.this)) {
-                    NotificationManager.cancelNotification(MainActivity.this, task);
-                }
             }
         });
 
@@ -235,21 +206,13 @@ public class MainActivity extends BaseActivity implements
             public void onChanged(@Nullable Task task) {
                 Log.d(TAG, "onTaskUpdated: " + task);
                 mTasksAdapter.sort();
-                WidgetUpdateService.startActionUpdatePlantWidgets(MainActivity.this);
-                if (PreferenceUtils.isNotificationsEnabled(MainActivity.this)) {
-                    NotificationManager.updateNotification(MainActivity.this, task);
-                }
             }
         });
-    }
 
-    private void setUpAuthListener() {
-        Log.d(TAG, "setUpAuthListener");
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        mViewModel.getAuthLiveData().observe(this, new Observer<Boolean>() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean != null && aBoolean) {
                     onSignedInInitialize();
                 } else {
                     onSignedOutCleanup();
@@ -262,10 +225,9 @@ public class MainActivity extends BaseActivity implements
                                             new AuthUI.IdpConfig.GoogleBuilder().build()))
                                     .build(),
                             RC_SIGN_IN);
-
                 }
             }
-        };
+        });
     }
 
     private void onSignedInInitialize() {

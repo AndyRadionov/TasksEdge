@@ -28,6 +28,7 @@ import io.github.andyradionov.tasksedge.data.database.Task;
 import io.github.andyradionov.tasksedge.databinding.ActivityTaskBinding;
 import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
 import io.github.andyradionov.tasksedge.ui.main.MainActivity;
+import io.github.andyradionov.tasksedge.ui.main.MainViewModel;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
@@ -44,12 +45,15 @@ public class TaskActivity extends BaseActivity {
     private Task mTask;
     private boolean isNewTask;
     private ActivityTaskBinding mBinding;
+    private TaskViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_task);
+        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(TaskViewModel.class);
+
         bindToolbar(mBinding.toolbar, mBinding.tvToolbarTitle);
 
         Intent intent = getIntent();
@@ -102,14 +106,13 @@ public class TaskActivity extends BaseActivity {
 
     private void handleDoneAction() {
         parseTaskInput();
-        TaskViewModel viewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         if (isNewTask) {
             Log.d(TAG, "onOptionsItemSelected: Add New Task");
-            viewModel.addTask(mTask);
+            mViewModel.addTask(mTask);
             AnalyticsUtils.logNewTaskLengthEvent(this, mTask.getText().length());
         } else {
             Log.d(TAG, "onOptionsItemSelected: Edit Task");
-            viewModel.updateTask(mTask);
+            mViewModel.updateTask(mTask);
         }
         finish();
     }

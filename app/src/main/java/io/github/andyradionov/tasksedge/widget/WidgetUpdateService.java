@@ -12,7 +12,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.app.App;
 import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.data.database.RepoListCallbacks;
 import io.github.andyradionov.tasksedge.data.database.Task;
@@ -26,8 +29,13 @@ public class WidgetUpdateService extends IntentService implements RepoListCallba
     private static final String TAG = WidgetUpdateService.class.getSimpleName();
     public static final String ACTION_UPDATE_WIDGET = "action_update";
 
+    @Inject
+    FirebaseRepository mFirebaseRepository;
+
+    @Inject
     public WidgetUpdateService() {
         super(WidgetUpdateService.class.getSimpleName());
+        App.getAppComponent().inject(this);
     }
 
     public static void startActionUpdatePlantWidgets(Context context) {
@@ -52,8 +60,7 @@ public class WidgetUpdateService extends IntentService implements RepoListCallba
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) return;
 
-        FirebaseRepository.getInstance()
-                .performListFetch(getString(R.string.order_key), this);
+        mFirebaseRepository.performListFetch(getString(R.string.order_key), this);
     }
 
     @Override

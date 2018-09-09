@@ -7,7 +7,10 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import javax.inject.Inject;
+
 import io.github.andyradionov.tasksedge.R;
+import io.github.andyradionov.tasksedge.app.App;
 import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.data.database.Task;
@@ -21,11 +24,13 @@ public class NotificationIntentService extends IntentService implements RepoItem
     public static final String ACTION_SCHEDULE_ALL = "schedule_all";
     public static final String ACTION_CANCEL_ALL = "cancel_all";
 
-    private FirebaseRepository mRepository;
+    @Inject
+    FirebaseRepository mRepository;
     private String mAction;
 
     public NotificationIntentService() {
         super(TAG);
+        App.getAppComponent().inject(this);
     }
 
     @Override
@@ -44,7 +49,6 @@ public class NotificationIntentService extends IntentService implements RepoItem
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) return;
 
-        mRepository = FirebaseRepository.getInstance();
         mRepository.attachDbListener(getString(R.string.order_key), this);
     }
 
