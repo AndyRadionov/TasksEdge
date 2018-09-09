@@ -23,17 +23,15 @@ public class MainViewModel extends ViewModel implements RepoItemCallbacks {
     private FirebaseRepository mRepository;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private Context mAppContext;
     private MutableLiveData<Task> mAddTaskLiveData;
     private MutableLiveData<Task> mRemoveTaskLiveData;
     private MutableLiveData<Task> mUpdateTaskLiveData;
     private MutableLiveData<Boolean> mAuthLiveData;
 
-    public MainViewModel(FirebaseRepository repository, Context context) {
+    public MainViewModel(FirebaseRepository repository) {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mRepository = repository;
-        mAppContext = context;
         mAddTaskLiveData = new MutableLiveData<>();
         mRemoveTaskLiveData = new MutableLiveData<>();
         mUpdateTaskLiveData = new MutableLiveData<>();
@@ -79,40 +77,19 @@ public class MainViewModel extends ViewModel implements RepoItemCallbacks {
         }
     }
 
-    public void updateNotifications(boolean isEnabled) {
-        NotificationManager.setNotificationsEnabled(mAppContext, isEnabled);
-        if (isEnabled) {
-            NotificationManager.scheduleAllNotifications(mAppContext);
-        } else {
-            NotificationManager.cancelAllNotifications(mAppContext);
-        }
-    }
-
     @Override
     public void onTaskAdded(Task task) {
         mAddTaskLiveData.setValue(task);
-        WidgetUpdateService.startActionUpdatePlantWidgets(mAppContext);
-        if (PreferenceUtils.isNotificationsEnabled(mAppContext)) {
-            NotificationManager.scheduleNotification(mAppContext, task);
-        }
     }
 
     @Override
     public void onTaskUpdated(Task task) {
         mUpdateTaskLiveData.setValue(task);
-        WidgetUpdateService.startActionUpdatePlantWidgets(mAppContext);
-        if (PreferenceUtils.isNotificationsEnabled(mAppContext)) {
-            NotificationManager.updateNotification(mAppContext, task);
-        }
     }
 
     @Override
     public void onTaskRemoved(Task task) {
         mRemoveTaskLiveData.setValue(task);
-        WidgetUpdateService.startActionUpdatePlantWidgets(mAppContext);
-        if (PreferenceUtils.isNotificationsEnabled(mAppContext)) {
-            NotificationManager.cancelNotification(mAppContext, task);
-        }
     }
 
     private void initAuthListener() {

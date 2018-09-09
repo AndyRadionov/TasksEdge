@@ -16,11 +16,6 @@ import io.github.andyradionov.tasksedge.ui.common.ViewModelFactory;
 @Module
 public class AppModule {
 
-    private Context mContext;
-    public AppModule(Context context) {
-        mContext = context;
-    }
-
     @Singleton
     @Provides
     FirebaseRepository provideFirebaseRepository() {
@@ -30,6 +25,6 @@ public class AppModule {
     @Singleton
     @Provides
     ViewModelProvider.Factory provideViewModelFactory(FirebaseRepository repository) {
-        return new ViewModelFactory(repository, mContext);
+        return new ViewModelFactory(repository);
     }
 }

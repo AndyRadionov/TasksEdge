@@ -110,7 +110,12 @@ public class MainActivity extends BaseActivity implements
             Log.d(TAG, "onSharedPreferenceChanged: notifications");
             boolean notificationsEnabled = sharedPreferences.getBoolean(key,
                     getResources().getBoolean(R.bool.pref_enable_notices_default));
-            mViewModel.updateNotifications(notificationsEnabled);
+            NotificationManager.setNotificationsEnabled(this, notificationsEnabled);
+            if (notificationsEnabled) {
+                NotificationManager.scheduleAllNotifications(this);
+            } else {
+                NotificationManager.cancelAllNotifications(this);
+            }
         }
     }
 
@@ -189,6 +194,10 @@ public class MainActivity extends BaseActivity implements
             public void onChanged(@Nullable Task task) {
                 Log.d(TAG, "onTaskAdded: " + task);
                 mTasksAdapter.addTask(task);
+                WidgetUpdateService.startActionUpdatePlantWidgets(MainActivity.this);
+                if (PreferenceUtils.isNotificationsEnabled(MainActivity.this)) {
+                    NotificationManager.scheduleNotification(MainActivity.this, task);
+                }
             }
         });
 
@@ -198,6 +207,10 @@ public class MainActivity extends BaseActivity implements
             public void onChanged(@Nullable Task task) {
                 Log.d(TAG, "onTaskRemoved: " + task);
                 mTasksAdapter.removeTask(task);
+                WidgetUpdateService.startActionUpdatePlantWidgets(MainActivity.this);
+                if (PreferenceUtils.isNotificationsEnabled(MainActivity.this)) {
+                    NotificationManager.cancelNotification(MainActivity.this, task);
+                }
             }
         });
 
@@ -206,6 +219,10 @@ public class MainActivity extends BaseActivity implements
             public void onChanged(@Nullable Task task) {
                 Log.d(TAG, "onTaskUpdated: " + task);
                 mTasksAdapter.sort();
+                WidgetUpdateService.startActionUpdatePlantWidgets(MainActivity.this);
+                if (PreferenceUtils.isNotificationsEnabled(MainActivity.this)) {
+                    NotificationManager.updateNotification(MainActivity.this, task);
+                }
             }
         });
 
