@@ -10,7 +10,11 @@ import io.github.andyradionov.tasksedge.data.database.Task;
  */
 public class TaskViewModel extends ViewModel {
 
-    private FirebaseRepository mRepository = FirebaseRepository.getInstance();
+    private FirebaseRepository mRepository;
+
+    public TaskViewModel(FirebaseRepository repository) {
+        mRepository = repository;
+    }
 
     public void addTask(Task task) {
         mRepository.addValue(task);
