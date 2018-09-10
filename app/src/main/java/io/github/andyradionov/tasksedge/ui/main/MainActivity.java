@@ -19,22 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
 import io.github.andyradionov.tasksedge.R;
-import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
-import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.data.database.Task;
 import io.github.andyradionov.tasksedge.data.network.QuoteFetcherUtils;
 import io.github.andyradionov.tasksedge.databinding.ActivityMainBinding;
 import io.github.andyradionov.tasksedge.notifications.NotificationManager;
+import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
 import io.github.andyradionov.tasksedge.ui.settings.SettingsActivity;
 import io.github.andyradionov.tasksedge.ui.task.TaskActivity;
-import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
-import io.github.andyradionov.tasksedge.ui.task.TaskViewModel;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
 import io.github.andyradionov.tasksedge.widget.WidgetUpdateService;

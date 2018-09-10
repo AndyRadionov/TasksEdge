@@ -10,7 +10,7 @@ import io.github.andyradionov.tasksedge.data.database.Task;
  */
 public class TaskViewModel extends ViewModel {
 
-    private FirebaseRepository mRepository;
+    private final FirebaseRepository mRepository;
 
     public TaskViewModel(FirebaseRepository repository) {
         mRepository = repository;

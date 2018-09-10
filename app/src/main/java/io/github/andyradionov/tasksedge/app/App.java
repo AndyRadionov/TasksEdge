@@ -5,7 +5,6 @@ import android.app.Application;
 import com.google.firebase.database.FirebaseDatabase;
 
 import io.github.andyradionov.tasksedge.di.AppComponent;
-import io.github.andyradionov.tasksedge.di.AppModule;
 import io.github.andyradionov.tasksedge.di.DaggerAppComponent;
 
 /**

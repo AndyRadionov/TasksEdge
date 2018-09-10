@@ -28,7 +28,6 @@ import io.github.andyradionov.tasksedge.data.database.Task;
 import io.github.andyradionov.tasksedge.databinding.ActivityTaskBinding;
 import io.github.andyradionov.tasksedge.ui.common.BaseActivity;
 import io.github.andyradionov.tasksedge.ui.main.MainActivity;
-import io.github.andyradionov.tasksedge.ui.main.MainViewModel;
 import io.github.andyradionov.tasksedge.utils.AnalyticsUtils;
 import io.github.andyradionov.tasksedge.utils.DateUtils;
 import io.github.andyradionov.tasksedge.utils.PreferenceUtils;

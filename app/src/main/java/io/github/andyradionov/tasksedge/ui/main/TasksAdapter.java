@@ -93,7 +93,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ItemTaskBinding binding;
+        private final ItemTaskBinding binding;
         private TaskViewHolder(ItemTaskBinding binding) {
             super(binding.getRoot());
             this.binding = binding;

@@ -1,7 +1,6 @@
 package io.github.andyradionov.tasksedge.di;
 
 import android.arch.lifecycle.ViewModelProvider;
-import android.content.Context;
 
 import javax.inject.Singleton;
 

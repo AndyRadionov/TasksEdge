@@ -2,7 +2,6 @@ package io.github.andyradionov.tasksedge.ui.main;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -11,22 +10,19 @@ import com.google.firebase.auth.FirebaseUser;
 import io.github.andyradionov.tasksedge.data.database.FirebaseRepository;
 import io.github.andyradionov.tasksedge.data.database.RepoItemCallbacks;
 import io.github.andyradionov.tasksedge.data.database.Task;
-import io.github.andyradionov.tasksedge.notifications.NotificationManager;
-import io.github.andyradionov.tasksedge.utils.PreferenceUtils;
-import io.github.andyradionov.tasksedge.widget.WidgetUpdateService;
 
 /**
  * @author Andrey Radionov
  */
 public class MainViewModel extends ViewModel implements RepoItemCallbacks {
 
-    private FirebaseRepository mRepository;
-    private FirebaseAuth mFirebaseAuth;
+    private final FirebaseRepository mRepository;
+    private final FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private MutableLiveData<Task> mAddTaskLiveData;
-    private MutableLiveData<Task> mRemoveTaskLiveData;
-    private MutableLiveData<Task> mUpdateTaskLiveData;
-    private MutableLiveData<Boolean> mAuthLiveData;
+    private final MutableLiveData<Task> mAddTaskLiveData;
+    private final MutableLiveData<Task> mRemoveTaskLiveData;
+    private final MutableLiveData<Task> mUpdateTaskLiveData;
+    private final MutableLiveData<Boolean> mAuthLiveData;
 
     public MainViewModel(FirebaseRepository repository) {
 

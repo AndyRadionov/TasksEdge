@@ -29,7 +29,7 @@ public class WidgetListService extends RemoteViewsService {
     private static class ListRemoteViewsFactory implements RemoteViewsFactory {
         private static final String TAG = ListRemoteViewsFactory.class.getSimpleName();
 
-        private Context mContext;
+        private final Context mContext;
         private List<String> mTasksText;
 
         private ListRemoteViewsFactory(Context applicationContext) {
@@ -63,7 +63,7 @@ public class WidgetListService extends RemoteViewsService {
          * This method acts like the onBindViewHolder method in an Adapter
          *
          * @param position The current position of the item in the GridView to be displayed
-         * @return The RemoteViews object to display for the provided postion
+         * @return The RemoteViews object to display for the provided position
          */
         @Override
         public RemoteViews getViewAt(int position) {

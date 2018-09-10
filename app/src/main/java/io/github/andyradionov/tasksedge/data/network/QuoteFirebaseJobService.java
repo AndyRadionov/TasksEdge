@@ -34,8 +34,8 @@ public class QuoteFirebaseJobService extends JobService {
     }
 
     private static class QuoteAsyncTask extends AsyncTask<Void, Void, Void> {
-        private WeakReference<QuoteFirebaseJobService> firebaseJobService;
-        private JobParameters jobParameters;
+        private final WeakReference<QuoteFirebaseJobService> firebaseJobService;
+        private final JobParameters jobParameters;
 
         private QuoteAsyncTask(QuoteFirebaseJobService jobService, JobParameters jobParameters) {
             this.firebaseJobService = new WeakReference<>(jobService);
