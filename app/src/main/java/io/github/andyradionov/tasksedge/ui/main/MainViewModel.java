@@ -93,11 +93,7 @@ public class MainViewModel extends ViewModel implements RepoItemCallbacks {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    mAuthLiveData.setValue(true);
-                } else {
-                    mAuthLiveData.setValue(false);
-                }
+                mAuthLiveData.setValue(user != null);
             }
         };
     }

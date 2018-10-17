@@ -21,19 +21,16 @@ import java.util.List;
 public class FirebaseRepository {
     private static final String TAG = FirebaseRepository.class.getSimpleName();
 
-    private final DatabaseReference mDatabaseReference;
+    private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
 
     public FirebaseRepository() {
         Log.d(TAG, "FirebaseRepository constructor call");
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseReference = firebaseDatabase.getReference().child(firebaseAuth
-                .getCurrentUser().getUid());
     }
 
     public void attachDbListener(String sortOrder, final RepoItemCallbacks dbCallbacks) {
-        if (mChildEventListener == null) {
+        setSignIn();
+        if (mChildEventListener == null && mDatabaseReference != null) {
             Log.d(TAG, "attachDbListener");
             mChildEventListener = new ChildEventListener() {
                 @Override
@@ -74,6 +71,8 @@ public class FirebaseRepository {
     }
 
     public void performListFetch(String sortOrder, final RepoListCallbacks dbCallbacks) {
+        setSignIn();
+        if (mDatabaseReference == null) return;
         mDatabaseReference.orderByChild(sortOrder)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -95,6 +94,7 @@ public class FirebaseRepository {
     }
 
     public void addValue(Task task) {
+        if (mDatabaseReference == null) return;
         Log.d(TAG, "addValue: " + task);
         String key = mDatabaseReference.push().getKey();
         task.setKey(key);
@@ -102,12 +102,21 @@ public class FirebaseRepository {
     }
 
     public void updateValue(Task task) {
+        if (mDatabaseReference == null) return;
         Log.d(TAG, "updateValue: " + task);
         mDatabaseReference.child(task.getKey()).setValue(task);
     }
 
     public void removeValue(String key) {
+        if (mDatabaseReference == null) return;
         Log.d(TAG, "removeValue for key: " + key);
         mDatabaseReference.child(key).removeValue();
+    }
+
+    private void setSignIn() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseReference = firebaseDatabase.getReference().child(firebaseAuth
+                .getCurrentUser().getUid());
     }
 }
