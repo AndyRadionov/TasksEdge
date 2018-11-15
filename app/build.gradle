@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "io.github.andyradionov.tasksedge"
         minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 28
+        versionCode 5
+        versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -22,17 +22,17 @@ android {
 }
 
 ext {
-    support_version = '27.1.1'
+    support_version = '28.0.0'
     constraint_version = '1.1.3'
     lifecycle_version = '1.1.1'
-    dagger_version = '2.16'
+    dagger_version = '2.17'
     okhttp_version = '3.10.0'
     jobdispathcher_version = '0.8.5'
-    firebase_core_version = '16.0.4'
-    firebase_db_version = '16.0.3'
+    firebase_core_version = '16.0.5'
+    firebase_db_version = '16.0.5'
     firebase_auth_version = '16.0.5'
     firebase_auth_ui_version = '4.0.1'
-    crashlytics_version = '2.9.5'
+    crashlytics_version = '2.9.6'
     junit_version = '4.12'
     test_runner_version = '1.0.2'
     espresso_version = '3.0.2'
@@ -41,6 +41,9 @@ ext {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:support-v4:$support_version"
+    implementation "com.android.support:customtabs:$support_version"
+    implementation "com.android.support:support-media-compat:$support_version"
     implementation "com.android.support:design:$support_version"
     implementation "com.android.support:cardview-v7:$support_version"
     implementation "com.android.support:preference-v7:$support_version"
@@ -65,7 +68,6 @@ dependencies {
     implementation "com.google.firebase:firebase-database:$firebase_db_version"
     implementation "com.google.firebase:firebase-auth:$firebase_auth_version"
     implementation "com.firebaseui:firebase-ui-auth:$firebase_auth_ui_version"
-
     implementation "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
 
     //Testing
